@@ -1,0 +1,32 @@
+LSNRCTL
+------------------
+  lsnrctl start
+  lsnrctl stop
+
+DB생성
+------------------
+Oracle Assitant 프로그램 이용해서 IPAMDB생성
+
+
+유저생성
+------------------
+  create user ipam_user identified by ipam_user
+
+-- 생성한 유저에 권한주고 연결하기 
+grant resource,connect to ipam_user;
+grant dba to ipam_user;
+
+connect / as sysdba
+
+DB 접속
+---------------------------------
+1) sqlplus ipam_user/ipam_user@IPAMDB
+2) sqlplus ipam_user/ipam_user@localhost:1521/IPAMDB
+
+파일실행
+---------------------------------
+sqlplus>@xxxx.sql
+
+
+
+create user ipam_user identified by ipam_user default tablespace doogle quota unlimited on doogle
