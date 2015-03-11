@@ -5,10 +5,27 @@
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
 
-
 <%@ include file= "./import/DBConnection.jsp" %>
 
 <%!
+boolean DEBUG = true;
+
+/*********************************************************
+ * User Define Utils START
+ *********************************************************/
+/**
+ * String to Int with DefaultValue
+ */
+public int toInt(String no, int defaultValue) {
+	try {
+		return Integer.parseInt(no);
+	}catch(NumberFormatException e) {
+		return defaultValue;
+	}
+}
+/*********************************************************
+ * User Define Utils END
+ *********************************************************/
 
 /**
  * User Define Exception CLAZZ
@@ -24,12 +41,30 @@ public class IpamException extends Exception {
 	}
 }
 
+/**
+ * IPAM_USER ValueObject
+ */
+public class IpamUserVo {
+	
+	public int pageNo;
+	public int scale;
+	
+	public String userName;
+	public String userId;
+	public String ipList;
+	public String otherDesc;
+	public String allowExcp;
+	public String regDate;
+	public String changeDate;
+
+}
+
 
 /**
  * ipam_user 테이블 목록 조회
  * @TODO 페이징처리, 검색조건 처리 
  */
-public List<Map<String, String>> db_user_list() throws IpamException {
+public List<Map<String, String>> db_user_list(IpamUserVo param) throws IpamException {
 
     List<Map<String, String>> mCurrentList = null;
     
@@ -37,6 +72,7 @@ public List<Map<String, String>> db_user_list() throws IpamException {
 	ResultSet rs = null;
 	PreparedStatement pstmt = null;
 	StringBuilder query = null;
+	int paramIndex = 1;
 	
 	try{
 		conn = getConnection();
@@ -54,11 +90,14 @@ public List<Map<String, String>> db_user_list() throws IpamException {
 		query.append(",decode(allow_excp,'t','Yes','NO') as allow_excp").append("\n");
 		query.append(",reg_date, change_date").append("\n");
 		query.append("from ipam_user").append("\n");
-		query.append(") where rnum between 1 and 10").append("\n");
-
-		pstmt = conn.prepareStatement(query.toString());
+		query.append(") where rnum between ? and ?").append("\n");
 		
-		//pstmt.setString(1, x);
+		pstmt = conn.prepareStatement(query.toString());
+		if(DEBUG) System.out.format("QUERY=%s", query.toString());
+		
+		pstmt.setInt(paramIndex++, ((param.pageNo - 1) * param.scale) + 1);
+		pstmt.setInt(paramIndex++, param.pageNo * param.scale);
+		if(DEBUG) System.out.format("BETWEEN %d AND %d", ((param.pageNo - 1) * param.scale) + 1, param.pageNo * param.scale);
 
 		rs = pstmt.executeQuery();
     	

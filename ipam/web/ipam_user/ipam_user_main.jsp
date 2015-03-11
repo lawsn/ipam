@@ -2,7 +2,11 @@
 <%@ page import="java.io.*,java.util.*,java.lang.*,java.net.*" %>
 <%@ include file="./ipam_user_service.jsp" %>
 <%
-List<Map<String, String>> userList = db_user_list();
+IpamUserVo param = new IpamUserVo();
+param.pageNo = toInt(request.getParameter("pageNo"), 1);
+param.scale = toInt(request.getParameter("scale"), 10);
+
+List<Map<String, String>> userList = db_user_list(param);
 if(userList == null) {
 	userList = new ArrayList<Map<String, String>>();
 }
@@ -94,18 +98,19 @@ if(userList == null) {
         <div class="maincontent">
             <div class="maincontentinner">
                 <div class="row-fluid">
-                    
+                    <form name="frm" method="post" action="./ipam_user_main.jsp">
+                    <input type="hidden" name="pageNo" value="<%=param.pageNo%>" />
                         <h5 class="subtitle">Recently Viewed Pages</h5>
                         <div class="divider30"></div>
                         
                         <h4 class="widgettitle">Data Table</h4>
                         <div id="dyntable_wrapper" class="dataTables_wrapper" role="grid">
                         <div id="dyntable_length" class="dataTables_length"><label>Show 
-                        <select size="1" name="dyntable_length" aria-controls="dyntable">
-                        <option value="10" selected="selected">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
+                        <select size="1" name="scale" aria-controls="dyntable" onchange="document.forms['frm'].submit();">
+                        <option value="10"<%if(param.scale==10){%> selected="selected"<%}%>>10</option>
+                        <option value="25"<%if(param.scale==25){%> selected="selected"<%}%>>25</option>
+                        <option value="50"<%if(param.scale==50){%> selected="selected"<%}%>>50</option>
+                        <option value="100"<%if(param.scale==100){%> selected="selected"<%}%>>100</option>
                         </select>
                          entries</label></div>
                         <div class="dataTables_filter" id="dyntable_filter">
@@ -150,99 +155,18 @@ if(userList == null) {
 					<%
                 	}
 					%>
-                		<tr class="gradeX odd">
-                            <td class="center ">1</td>
-                            <td class=" ">Trident</td>
-                            <td class=" ">Internet Explorer 4.0</td>
-                            <td class=" ">Win 95+</td>
-                            <td class="center ">4</td>
-                            <td class="center ">X</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr>
-                        <tr class="gradeC even">
-							<td class="center ">2</td>
-							<td class=" ">Trident</td>
-                            <td class=" ">Internet Explorer 5.0</td>
-                            <td class=" ">Win 95+</td>
-                            <td class="center ">5</td>
-                            <td class="center ">C</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr>
-                        <tr class="gradeA odd">
-                        	<td class="center ">3</td>
-                            <td class=" ">Internet Explorer 5.5</td>
-                            <td class=" ">Trident</td>
-                            <td class=" ">Win 95+</td>
-                            <td class="center ">5.5</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr>
-                        <tr class="gradeA even">
-                        	<td class="center ">4</td>
-                            <td class=" ">Trident</td>
-                            <td class=" ">Internet Explorer 6</td>
-                            <td class=" ">Win 98+</td>
-                            <td class="center ">6</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                            
-                        </tr><tr class="gradeA odd">
-                        	<td class="center ">5</td>
-                            <td class=" ">Trident</td>
-                            <td class=" ">Internet Explorer 7</td>
-                            <td class=" ">Win XP SP2+</td>
-                            <td class="center ">7</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr><tr class="gradeA even">
-                          <td class="center ">6</td>
-                            <td class=" ">Trident</td>
-                            <td class=" ">AOL browser (AOL desktop)</td>
-                            <td class=" ">Win XP</td>
-                            <td class="center ">6</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr><tr class="gradeA odd">
-                          <td class="center ">7</td>
-                            <td class=" ">Gecko</td>
-                            <td class=" ">Firefox 1.0</td>
-                            <td class=" ">Win 98+ / OSX.2+</td>
-                            <td class="center ">1.7</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr><tr class="gradeA even">
-                            <td class="center ">8</td>
-                            <td class=" ">Gecko</td>
-                            <td class=" ">Firefox 1.5</td>
-                            <td class=" ">Win 98+ / OSX.2+</td>
-                            <td class="center ">1.8</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr><tr class="gradeA odd">
-                            <td class="center ">9</td>
-                            <td class=" ">Gecko</td>
-                            <td class=" ">Firefox 2.0</td>
-                            <td class=" ">Win 98+ / OSX.2+</td>
-                            <td class="center ">1.8</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr><tr class="gradeA even">
-                          <td class="center ">10</td>
-                            <td class=" ">Gecko</td>
-                            <td class=" ">Firefox 3.0</td>
-                            <td class=" ">Win 2k+ / OSX.3+</td>
-                            <td class="center ">1.9</td>
-                            <td class="center ">A</td>
-                            <td class="centeralign"><a href="#" class="deleterow"><span class="icon-trash"></span></a></td>
-                        </tr>
                    </tbody></table>
                    			<div class="dataTables_info" id="dyntable_info">Showing 1 to 10 of 51 entries</div>
                    			<div class="dataTables_paginate paging_full_numbers" id="dyntable_paginate">
                    			<a tabindex="0" class="first paginate_button paginate_button_disabled" id="dyntable_first">First</a>
                    			<a tabindex="0" class="previous paginate_button paginate_button_disabled" id="dyntable_previous">Previous</a>
-                   			<span><a tabindex="0" class="paginate_active">1</a><a tabindex="0" class="paginate_button">2</a>
-                   			<a tabindex="0" class="paginate_button">3</a><a tabindex="0" class="paginate_button">4</a>
-                   			<a tabindex="0" class="paginate_button">5</a></span>
+                   			<span>
+                   				<a tabindex="0" class="paginate_active" href="javascript:goPage(1);">1</a>
+                   				<a tabindex="0" class="paginate_button" href="javascript:goPage(2);">2</a>
+                   				<a tabindex="0" class="paginate_button" href="javascript:goPage(3);">3</a>
+                   				<a tabindex="0" class="paginate_button" href="javascript:goPage(4);">4</a>
+                   				<a tabindex="0" class="paginate_button" href="javascript:goPage(5);">5</a>
+                   			</span>
                    			<a tabindex="0" class="next paginate_button" id="dyntable_next">Next</a>
                    			<a tabindex="0" class="last paginate_button" id="dyntable_last">Last</a>
                    			</div>
@@ -250,6 +174,7 @@ if(userList == null) {
                         <br />
                     
                     <!--span4-->
+                    </form>
                 </div><!--row-fluid-->
                 
                 <div class="footer">
@@ -307,6 +232,11 @@ if(userList == null) {
         
     
     });
+    
+    function goPage(pageNo) {
+    	document.forms['frm'].pageNo.value = pageNo;
+    	document.forms['frm'].submit();
+    }
 </script>
 </body>
 
