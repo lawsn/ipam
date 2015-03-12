@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" %>
+<%@ page contentType="text/html;charset=euc-kr" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.*"%>
@@ -23,6 +23,16 @@ public int toInt(String no, int defaultValue) {
 		return defaultValue;
 	}
 }
+
+/**
+ * NULL to Blank
+ */
+public String nullToBlank(String str) {
+	if(str == null) {
+		return "";
+	}
+	return str;
+}
 /*********************************************************
  * User Define Utils END
  *********************************************************/
@@ -42,80 +52,165 @@ public class IpamException extends Exception {
 }
 
 /**
+ * IPAM_USER Parameter ValueObject
+ */
+public class ParameterVo {
+
+	public int page_no;
+	public int scale;
+	public int total_count;
+
+	public String key_user_name;
+	public String key_user_id;
+	public String key_ip_list;
+	public String key_other_desc;
+	public String key_allow_excp;
+	
+	@Override
+	public String toString() {
+		return String.format("page_no=%s\nscale=%s\ntotal_count=%s\nkey_user_name=%s\nkey_user_id=%s\nkey_ip_list=%s\nkey_other_desc=%s\nkey_allow_excp=%s\n", page_no, scale, total_count, key_user_name, key_user_id, key_ip_list, key_other_desc, key_allow_excp);
+	}
+}
+
+/**
  * IPAM_USER ValueObject
  */
 public class IpamUserVo {
 	
-	public int pageNo;
-	public int scale;
-	
-	public String userName;
-	public String userId;
-	public String ipList;
-	public String otherDesc;
-	public String allowExcp;
-	public String regDate;
-	public String changeDate;
+	public int rnum;
+	public String user_name;
+	public String user_id;
+	public String ip_list;
+	public String other_desc;
+	public String allow_excp;
+	public String reg_date;
+	public String change_date;
 
+	@Override
+	public String toString() {
+		return String.format("user_name=%s\nuser_id=%s\nip_list=%s\nother_desc=%s\nallow_excp=%s\n", user_name, user_id, ip_list, other_desc, allow_excp);
+	}
+}
+
+/**
+ * ÃÑ°Ç¼ö Á¶È¸
+ * @param conn ¿¬°áµÈ DBConnection
+ * @param subQuery °Ç¼ö Á¶È¸ ÇÒ query
+ * @param bind query bind values
+ */
+public int getCount(Connection conn, String subQuery, Object... bind) throws IpamException {
+	
+	PreparedStatement pstmt = null;
+    ResultSet rs = null;
+    
+	int count = 0;
+	int paramIndex = 1;
+	
+    try {
+    	pstmt = conn.prepareStatement("SELECT COUNT(*) FROM (" + subQuery + ")");
+    	for(int i=0; i<bind.length; i++) {
+   			pstmt.setObject(paramIndex++, bind[i]);
+    	}
+    	rs = pstmt.executeQuery();
+    	
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+        return count;
+        
+    } catch(SQLException ex) {
+        throw new IpamException("getCount", ex);
+        
+    } finally {
+        if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+    }
 }
 
 
 /**
- * ipam_user í…Œì´ë¸” ëª©ë¡ ì¡°íšŒ
- * @TODO íŽ˜ì´ì§•ì²˜ë¦¬, ê²€ìƒ‰ì¡°ê±´ ì²˜ë¦¬ 
+ * @TODO °Ë»öÁ¶°Ç Ã³¸® 
+ * ipam_user Å×ÀÌºí ¸ñ·Ï Á¶È¸
+ * @param param °Ë»öÁ¶°Ç
  */
-public List<Map<String, String>> db_user_list(IpamUserVo param) throws IpamException {
+public List<IpamUserVo> db_user_list(ParameterVo param) throws IpamException {
 
-    List<Map<String, String>> mCurrentList = null;
-    
 	Connection conn = null;
 	ResultSet rs = null;
 	PreparedStatement pstmt = null;
 	StringBuilder query = null;
 	int paramIndex = 1;
+	List<Object> bind = null;
 	
+    List<IpamUserVo> mCurrentList = null;
+    IpamUserVo vo = null;
+    
 	try{
 		conn = getConnection();
 		conn.setAutoCommit(false);		
 	
-		mCurrentList = new ArrayList<Map<String, String>>();
-		
 		//-------------------------------------------
 		// Query section
 		//-------------------------------------------
 		query = new StringBuilder();
-		query.append("select * from (").append("\n");
 		query.append("select row_number() over(order by reg_date asc) as rnum").append("\n");
 		query.append(",user_name,user_id,ip_list,other_desc").append("\n");
-		query.append(",decode(allow_excp,'t','Yes','NO') as allow_excp").append("\n");
+		query.append(",decode(allow_excp,'t','Yes','No') as allow_excp").append("\n");
 		query.append(",reg_date, change_date").append("\n");
 		query.append("from ipam_user").append("\n");
-		query.append(") where rnum between ? and ?").append("\n");
+		// search
+		bind = new LinkedList<Object>();
 		
-		pstmt = conn.prepareStatement(query.toString());
+		query.append("where 1=1").append("\n");
+		if(!"".equals(param.key_user_name)) {
+			query.append("and user_name like '%'||?||'%'").append("\n");
+			bind.add(param.key_user_name);
+		}
+		if(!"".equals(param.key_user_id)) {
+			query.append("and user_id like '%'||?||'%'").append("\n");
+			bind.add(param.key_user_id);
+		}
+		if(!"".equals(param.key_ip_list)) {
+			query.append("and ip_list like '%'||?||'%'").append("\n");
+			bind.add(param.key_ip_list);
+		}
+		if(!"".equals(param.key_other_desc)) {
+			query.append("and other_desc like '%'||?||'%'").append("\n");
+			bind.add(param.key_other_desc);
+		}
+		if(!"".equals(param.key_allow_excp)) {
+			query.append("and allow_excp = ?").append("\n");
+			bind.add(param.key_allow_excp);
+		}
+		
+		param.total_count = getCount(conn, query.toString(), bind.toArray());
+		
+		pstmt = conn.prepareStatement("SELECT * FROM (" + query.toString() + ") WHERE RNUM BETWEEN ? AND ?");
 		if(DEBUG) System.out.format("QUERY=%s", query.toString());
 		
-		pstmt.setInt(paramIndex++, ((param.pageNo - 1) * param.scale) + 1);
-		pstmt.setInt(paramIndex++, param.pageNo * param.scale);
-		if(DEBUG) System.out.format("BETWEEN %d AND %d", ((param.pageNo - 1) * param.scale) + 1, param.pageNo * param.scale);
+    	for(Object b : bind) {
+   			pstmt.setObject(paramIndex++, b);
+    	}
+    	pstmt.setInt(paramIndex++, ((param.page_no - 1) * param.scale) + 1);
+		pstmt.setInt(paramIndex++, param.page_no * param.scale);
+		if(DEBUG) System.out.format("BETWEEN %d AND %d", ((param.page_no - 1) * param.scale) + 1, param.page_no * param.scale);
 
 		rs = pstmt.executeQuery();
     	
-    	int i = 0;
+		mCurrentList = new ArrayList<IpamUserVo>();
     	while(rs.next()) {
     		
-    		HashMap item = new HashMap();
-        	item.put("rnum", rs.getString("rnum"));
-        	item.put("user_name", rs.getString("user_name"));
-        	item.put("user_id", rs.getString("user_id"));
-        	item.put("ip_list", rs.getString("ip_list"));
-        	item.put("other_desc", rs.getString("other_desc"));
-        	item.put("allow_excp", rs.getString("allow_excp"));
-        	item.put("reg_date", rs.getString("reg_date"));
-        	item.put("change_date", rs.getString("change_date"));
-         	
-         	mCurrentList.add(item);
-			i++;
+    		vo = new IpamUserVo();
+    		vo.rnum = rs.getInt("rnum");
+    		vo.user_name = rs.getString("user_name");
+    		vo.user_id = rs.getString("user_id");
+    		vo.ip_list = rs.getString("ip_list");
+    		vo.other_desc = rs.getString("other_desc");
+    		vo.allow_excp = rs.getString("allow_excp");
+    		vo.reg_date = rs.getString("reg_date");
+    		vo.change_date = rs.getString("change_date");
+    		
+         	mCurrentList.add(vo);
     	}
     	
     	return mCurrentList;
@@ -131,103 +226,82 @@ public List<Map<String, String>> db_user_list(IpamUserVo param) throws IpamExcep
 	}
 }
 
-
-
-
-
-
-
-
-//crow1 start
-public static String getCurrentTime3() {
-
-    SimpleDateFormat formatter = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
-    Date currentTime = new Date();
-    String dateString = formatter.format(currentTime);
-
-   return dateString;
-}
-
-public String getCurrentTimeLongString()
-{
-	long ctime =  System.currentTimeMillis();
-	return Long.toString(ctime);
-}
-
-
-
-
-
-public void db_user_insert(HashMap userItem) throws IpamException {
+/**
+ * ipam_user Å×ÀÌºí ÀÔ·Â/¼öÁ¤
+ * @param userVo ÀÔ·Â/¼öÁ¤ Á¤º¸
+ */
+public void db_user_manage(IpamUserVo userVo) throws IpamException {
 	
 	Connection conn = null;
     PreparedStatement pstmt = null;
+    StringBuilder query = null;
+    int paramIndex = 1;
     
     try {
         conn = getConnection();
-        pstmt = conn.prepareStatement(
-        "INSERT INTO ipam_user (user_id, user_name, ip_list, other_desc, allow_excp, reg_date, change_date) " +
-        "VALUES (?,?,?,?,?,?,?)");
+        conn.setAutoCommit(false);
         
-        String reg_date = getCurrentTime3();
-        String change_date = reg_date;
-        	  
-		pstmt.setString(1, (String) userItem.get("user_id"));
-		pstmt.setString(2, (String) userItem.get("user_name"));
-		pstmt.setString(3, (String) userItem.get("ip_list"));
-		pstmt.setString(4, (String) userItem.get("other_desc"));
-		pstmt.setString(5, (String) userItem.get("allow_excp"));
-		pstmt.setString(6, reg_date);
-		pstmt.setString(7, change_date);
-		
+        query = new StringBuilder();
+        query.append("MERGE INTO ipam_user").append("\n");
+        query.append("     USING DUAL").append("\n");
+        query.append("        ON (user_id = ?)").append("\n");
+        query.append("WHEN MATCHED").append("\n");
+        query.append("THEN").append("\n");
+        query.append("   UPDATE SET user_name = ?,").append("\n");
+        query.append("              ip_list = ?,").append("\n");
+        query.append("              other_desc = ?,").append("\n");
+        query.append("              allow_excp = NVL(?, 'f'),").append("\n");
+        query.append("              change_date = TO_CHAR (SYSDATE, 'YYYY-MM-DD HH24:MI:SS')").append("\n");
+        query.append("WHEN NOT MATCHED").append("\n");
+        query.append("THEN").append("\n");
+        query.append("   INSERT     (user_id,").append("\n");
+        query.append("               user_name,").append("\n");
+        query.append("               ip_list,").append("\n");
+        query.append("               other_desc,").append("\n");
+        query.append("               allow_excp,").append("\n");
+        query.append("               reg_date,").append("\n");
+        query.append("               change_date)").append("\n");
+        query.append("       VALUES (?,").append("\n");
+        query.append("               ?,").append("\n");
+        query.append("               ?,").append("\n");
+        query.append("               ?,").append("\n");
+        query.append("               NVL(?, 'f'),").append("\n");
+        query.append("               TO_CHAR (SYSDATE, 'YYYY-MM-DD HH24:MI:SS'),").append("\n");
+        query.append("               TO_CHAR (SYSDATE, 'YYYY-MM-DD HH24:MI:SS'))").append("\n");
+        
+        pstmt = conn.prepareStatement(query.toString());
+        if(DEBUG) System.out.format("QUERY=%s", query.toString());
+        if(DEBUG) System.out.println(userVo);
+        
+        pstmt.setString(paramIndex++, userVo.user_id);
+        pstmt.setString(paramIndex++, userVo.user_name);
+        pstmt.setString(paramIndex++, userVo.ip_list);
+        pstmt.setString(paramIndex++, userVo.other_desc);
+        pstmt.setString(paramIndex++, userVo.allow_excp);
+        pstmt.setString(paramIndex++, userVo.user_id);
+        pstmt.setString(paramIndex++, userVo.user_name);
+        pstmt.setString(paramIndex++, userVo.ip_list);
+        pstmt.setString(paramIndex++, userVo.other_desc);
+        pstmt.setString(paramIndex++, userVo.allow_excp);
+        
         pstmt.executeUpdate();
+        conn.commit();
         
     } catch(SQLException ex) {
-        throw new IpamException("insert", ex);
-        
+    	try { conn.rollback(); } catch(SQLException nohub) {}
+        throw new IpamException("manage", ex);
     } catch (Exception ex) {
-    	throw new IpamException("insert", ex);
+    	try { conn.rollback(); } catch(SQLException nohub) {}
+    	throw new IpamException("manage", ex);
 	} finally {
-        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+        if (pstmt != null) try { pstmt.close(); } catch(SQLException nohub) {}
+        if (conn != null) try { conn.close(); } catch(SQLException nohub) {}
     }
 }
 
-public void db_user_update(HashMap userItem) throws IpamException {
-	
-	Connection conn = null;
-    PreparedStatement pstmt = null;
-    
-    try {
-        conn = getConnection();
-        pstmt = conn.prepareStatement(
-        "UPDATE ipam_user SET user_name =?, ip_list =?, other_desc =? , "+
-        " allow_excp=?  , change_date=? " +
-        "WHERE user_id=?");
-          
-        String change_date = getCurrentTime3(); 	  
-        	  
-		pstmt.setString(1, (String) userItem.get("user_name"));
-		pstmt.setString(2, (String) userItem.get("ip_list"));
-		pstmt.setString(3, (String) userItem.get("other_desc"));
-		pstmt.setString(4, (String) userItem.get("allow_excp"));
-		pstmt.setString(5, change_date);
-		pstmt.setString(6, (String)userItem.get("user_id"));
-		
-        pstmt.executeUpdate();
-        
-    } catch(SQLException ex) {
-        throw new IpamException("update", ex);
-        
-    } catch (Exception ex) {
-    	   throw new IpamException("update", ex);
-           	
-	} finally {
-        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
-    }
-}
-
+/**
+ * ipam_user Å×ÀÌºí »èÁ¦
+ */
 public void db_user_delete(String user_id) throws IpamException {
 	
 	Connection conn = null;
@@ -235,12 +309,15 @@ public void db_user_delete(String user_id) throws IpamException {
     
     try {
         conn = getConnection();
-        pstmt = conn.prepareStatement(
-        "DELETE FROM ipam_user WHERE user_id=?");
+        conn.setAutoCommit(false);
+        
+        pstmt = conn.prepareStatement("DELETE FROM ipam_user WHERE user_id=?");
         pstmt.setString(1, user_id);
-        pstmt.executeUpdate();        	
+        pstmt.executeUpdate();
+        conn.commit();
     	
     } catch(SQLException ex) {
+    	try { conn.rollback(); } catch(SQLException nohub) {}
         throw new IpamException("delete", ex);
         
     } finally {
@@ -248,156 +325,4 @@ public void db_user_delete(String user_id) throws IpamException {
         if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
 }
-
-public int getCount(String user_id, String user_name) throws IpamException {
-	
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-    
-    try {
-    	boolean bFind1 = false;
-    	boolean bFind2 = false;
-    	
-    	 String queary = "SELECT COUNT(*) FROM ipam_user ";
-         
-         if(user_id!=null&&user_id.equalsIgnoreCase("")==false)
-         	bFind1 = true;
-         if(user_name!=null&&user_name.equalsIgnoreCase("")==false)
-         	bFind2 = true;
-         if(bFind1==true||bFind2==true)
-         	queary+=" WHERE ";
-         
-         if(bFind1)
-         	queary+=" user_id = "+"'"+user_id+"' ";
-         if(bFind2)
-             queary+=" user_name = "+"'"+user_name+"' ";
-         
-         
-        conn = getConnection();
-        stmt = conn.createStatement();
-        rs = stmt.executeQuery(queary);
-        
-        int count = 0;
-        if (rs.next()) {
-            count = rs.getInt(1);
-        }
-        return count;
-        
-    } catch(SQLException ex) {
-        throw new IpamException("getCount", ex);
-        
-    } finally {
-        if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-        if (stmt != null) try { stmt.close(); } catch(SQLException ex) {}
-        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
-    }
-}
-
-
-
-public List<HashMap> db_user_search(String user_id, String user_name, String ip_list, String allow_excp) throws IpamException {
-	
-    Connection conn = null;
-    //PreparedStatement pstmt = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-    
-    List<HashMap> mCurrentList;
-    
-    try {
-    	boolean bFind1 = false;//user_id
-    	boolean bFind2 = false;//user_name
-    	boolean bFind3 = false;//ip_list
-   		boolean bFind4 = false;//allow_excp
-   		
-   		String Find2And="";
-   		String Find3And="";
-   		String Find4And="";
-   		
-        conn = getConnection();
-        String queary = "SELECT * FROM ipam_user ";
-    
-        if(user_id!=null&&user_id.equalsIgnoreCase("")==false)
-        	bFind1 = true;
-        if(user_name!=null&&user_name.equalsIgnoreCase("")==false){
-        	if(bFind1==true)
-        		Find2And=" AND ";
-        	bFind2 = true;
-        }
-        
-        if(ip_list!=null&&ip_list.equalsIgnoreCase("")==false){
-        	if(bFind1==true||bFind2==true)
-        		Find3And=" AND ";
-        	bFind3 = true;
-        }
-        
-        if(allow_excp!=null&&allow_excp.equalsIgnoreCase("")==false){
-        	if(bFind1==true||bFind2==true||bFind3==true)
-        		Find4And=" AND ";
-        	bFind4 = true;
-        }
-        
-        if(bFind1==true||bFind2==true||bFind3==true||bFind4==true)
-        	queary+=" WHERE ";
-        
-        if(bFind1)
-        	queary+=" user_id = "+"'"+user_id+"' ";
-        if(bFind2){
-        	queary+=Find2And;
-            queary+=" user_name = "+"'"+user_name+"' ";
-        }
-        if(bFind3){
-        	queary+=Find3And;
-            queary+=" ip_list = "+"'"+ip_list+"' ";
-        }
-        if(bFind4){
-        	queary+=Find4And;
-            queary+=" allow_excp = "+"'"+allow_excp+"' ";
-        }
-        	
-        queary+=" ORDER BY reg_date ASC ";
-        	
-        System.out.println("search queary="+queary);		
-        stmt = conn.createStatement();
-        rs = stmt.executeQuery(queary);
-        
-        
-        mCurrentList = new java.util.ArrayList<HashMap>();
-        
-        while(rs.next()) {
-        	
-        	HashMap item = new HashMap();
-           	item.put("user_id", rs.getString("user_id"));
-           	item.put("user_name", rs.getString("user_name"));
-           	item.put("ip_list", rs.getString("ip_list"));
-           	item.put("other_desc", rs.getString("other_desc"));
-           	item.put("allow_excp", rs.getString("allow_excp"));
-           	item.put("reg_date", rs.getString("reg_date"));
-           	item.put("change_date", rs.getString("change_date"));
-             	
-			mCurrentList.add(item);
-             	
-        }
-     
-        return mCurrentList;
-        
-        
-    } catch(SQLException ex) {
-        throw new IpamException("Search", ex);
-        
-    } catch (Exception ex) {
-		
-    	throw new IpamException("Search", ex);
-	} finally {
-        if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-        if (stmt != null) try { stmt.close(); } catch(SQLException ex) {}
-        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
-    }
-	
-}
-
-
-
-
 %>	

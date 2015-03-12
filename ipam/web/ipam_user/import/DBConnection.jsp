@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" %>
+<%@ page contentType="text/html;charset=euc-kr" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.sql.*"%> 
 <%@ page import="java.util.*"%> 
