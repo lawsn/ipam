@@ -92,7 +92,7 @@ if(userList == null) {
 					if(iPage > param.getTotalPage()) {
 						break;
 					}
-					if(param.page_no==iPage) {
+					if(param.page_no == iPage) {
 				%>
 				<a tabindex="0" class="paginate_active"><%=iPage%></a>
 				<%
@@ -148,7 +148,7 @@ jQuery(document).ready(function() {
 		ipam.user.list(document.forms['frm_list'], no);
 	});
 	
-	if(<%=param.getTotalPage() < param.getStartPageNo() + g_scale - 1%>) { //Next
+	if(<%=param.getTotalPage() <= param.getStartPageNo() + g_scale - 1%>) { //Next
 		jQuery('#dyntable_next').addClass('paginate_button_disabled');
 	}else {
 		jQuery('#dyntable_next').click(function() {
