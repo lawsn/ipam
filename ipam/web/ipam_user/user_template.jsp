@@ -8,7 +8,7 @@
 <title>UHM-MobileOTP Administrator </title>
 <link rel="stylesheet" href="./css/style.default.css" type="text/css" />
 <link rel="stylesheet" href="./css/responsive-tables.css">
-<link rel="stylesheet" href="./css/ipam_user_style.css">
+<link rel="stylesheet" href="./css/user_style.css">
 <script type="text/javascript" src="./js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="./js/jquery-migrate-1.1.1.min.js"></script>
 <script type="text/javascript" src="./js/jquery-ui-1.10.3.min.js"></script>
@@ -22,7 +22,7 @@
 <script type="text/javascript" src="./js/jquery.slimscroll.js"></script>
 <script type="text/javascript" src="./js/custom.js"></script>
 <!--[if lte IE 8]><script language="javascript" type="text/javascript" src="./js/excanvas.min.js"></script><![endif]-->
-<script type="text/javascript" src="./js/ipam_user_script.js"></script>
+<script type="text/javascript" src="./js/user_script.js"></script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
 	ipam.user.list();

@@ -33,21 +33,24 @@ ipam.user.manage = function(user_id) {
 /**
  * 사용자관리 실행
  */
-ipam.user.process = function(frm) {
+ipam.user.process = function(frm, frm_list) {
 	jQuery.post('./user_manage.jsp', jQuery(frm).serialize(), function(data) {
-		if('SUCCESS' == data) {
-			ipam.user.closeLayer('layer1');
-		}
+		ipam.user.list(frm_list);
+		alert('처리되었습니다.');
+		ipam.user.closeLayer();
 	});
 };
 
 /**
  * 사용자 삭제
  */
-ipam.user.del = function(user_id) {
-	jQuery.post('./user_manage.jsp', 'proc=delete&user_id=' + user_id, function(data) {
-		ipam.user.list(document.forms['frm_list']);
-	});
+ipam.user.del = function(frm, user_id) {
+	if(confirm('사용자('+user_id+')를 삭제하시겠습니까?')) {
+		jQuery.post('./user_manage.jsp', 'proc=delete&user_id=' + user_id, function(data) {
+			ipam.user.list(frm);
+			alert('삭제되었습니다.');
+		});
+	}
 };
 
 /**
@@ -57,9 +60,12 @@ ipam.user.openLayer = function(url, user_id) {
 	
 	jQuery.post(url, 'user_id=' + user_id, function(data) {
 		
-		jQuery('body').append(data);
+		ipam.user.closeLayer();
+		var layer = jQuery('<div id="layerpopup" class="pop-layer"><div id="layercontents" class="pop-container"></div></div></div>');
+		jQuery('body').append(layer);
+		jQuery('#layercontents').append(data);
 		
-		var temp = jQuery('#layer1');		//레이어의 id를 temp변수에 저장
+		var temp = jQuery('#layerpopup');		//레이어의 id를 temp변수에 저장
 		var bg = temp.prev().hasClass('bg');	//dimmed 레이어를 감지하기 위한 boolean 변수
 	
 		if(bg){
@@ -80,12 +86,10 @@ ipam.user.openLayer = function(url, user_id) {
 			}else{
 				temp.fadeOut();		//'닫기'버튼을 클릭하면 레이어가 사라진다.
 			}
-			e.preventDefault();
 		});
 	
 		jQuery('.layer .bg').click(function(e){
 			jQuery('.layer').fadeOut();
-			e.preventDefault();
 		});
 	});
 
@@ -94,10 +98,9 @@ ipam.user.openLayer = function(url, user_id) {
 /**
  * 레이어팝업 닫기
  */
-ipam.user.closeLayer = function(id) {
+ipam.user.closeLayer = function() {
 	
-	jQuery('#'+id).fadeOut(function() {
+	jQuery('#layerpopup').fadeOut(function() {
 		jQuery(this).remove();
 	});
-	e.preventDefault();
 };

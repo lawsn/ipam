@@ -8,7 +8,11 @@
 <%@ include file= "./import/DBConnection.jsp" %>
 
 <%!
+/*********************************************************
+ * Global Variable
+ *********************************************************/
 boolean DEBUG = true;
+int g_scale = 5; //paging sacle count
 
 /*********************************************************
  * User Define Utils START
@@ -57,7 +61,7 @@ public class IpamException extends Exception {
 public class ParameterVo {
 
 	public int page_no;
-	public int scale;
+	public int view_count;
 	public int total_count;
 
 	public String key_user_name;
@@ -66,9 +70,33 @@ public class ParameterVo {
 	public String key_other_desc;
 	public String key_allow_excp;
 	
+	public int getStartNo() {
+		return ((this.page_no - 1) * this.view_count) + 1;
+	}
+	
+	public int getEndNo() {
+		return this.page_no * this.view_count;
+	}
+	
+	public int getTotalPage() {
+		int no = ((int) (this.total_count / this.view_count));
+		if(this.total_count % this.view_count == 0) {
+			return no;
+		}
+		return no + 1;
+	}
+	
+	public int getStartPageNo() {
+		int no = ((int) (this.page_no / g_scale) * g_scale) + 1;
+		if(this.page_no % g_scale == 0) {
+			return no - g_scale;
+		}
+		return no;
+	}
+	
 	@Override
 	public String toString() {
-		return String.format("page_no=%s\nscale=%s\ntotal_count=%s\nkey_user_name=%s\nkey_user_id=%s\nkey_ip_list=%s\nkey_other_desc=%s\nkey_allow_excp=%s\n", page_no, scale, total_count, key_user_name, key_user_id, key_ip_list, key_other_desc, key_allow_excp);
+		return String.format("page_no=%s\nview_count=%s\ntotal_count=%s\nkey_user_name=%s\nkey_user_id=%s\nkey_ip_list=%s\nkey_other_desc=%s\nkey_allow_excp=%s\n", page_no, view_count, total_count, key_user_name, key_user_id, key_ip_list, key_other_desc, key_allow_excp);
 	}
 }
 
@@ -85,6 +113,18 @@ public class IpamUserVo {
 	public String allow_excp;
 	public String reg_date;
 	public String change_date;
+	
+	public String joinIpList(String join) {
+		
+		StringBuilder sb = new StringBuilder();
+		if(this.ip_list != null && this.ip_list.length() > 0) {
+			String[] ipList = this.ip_list.split(",");
+			for(String ip : ipList) {
+				sb.append(ip).append(join);
+			}
+		}
+		return sb.toString();
+	}
 
 	@Override
 	public String toString() {
@@ -153,33 +193,33 @@ public List<IpamUserVo> db_user_list(ParameterVo param) throws IpamException {
 		// Query section
 		//-------------------------------------------
 		query = new StringBuilder();
-		query.append("select row_number() over(order by reg_date asc) as rnum").append("\n");
+		query.append("SELECT ROW_NUMBER() OVER(ORDER BY reg_date DESC) AS rnum").append("\n");
 		query.append(",user_name,user_id,ip_list,other_desc").append("\n");
-		query.append(",decode(allow_excp,'t','Yes','No') as allow_excp").append("\n");
+		query.append(",DECODE(allow_excp,'t','Yes','No') AS allow_excp").append("\n");
 		query.append(",reg_date, change_date").append("\n");
-		query.append("from ipam_user").append("\n");
+		query.append("FROM ipam_user").append("\n");
 		// search
 		bind = new LinkedList<Object>();
 		
-		query.append("where 1=1").append("\n");
+		query.append("WHERE 1=1").append("\n");
 		if(!"".equals(param.key_user_name)) {
-			query.append("and user_name like '%'||?||'%'").append("\n");
+			query.append("AND user_name like '%'||?||'%'").append("\n");
 			bind.add(param.key_user_name);
 		}
 		if(!"".equals(param.key_user_id)) {
-			query.append("and user_id like '%'||?||'%'").append("\n");
+			query.append("AND user_id like '%'||?||'%'").append("\n");
 			bind.add(param.key_user_id);
 		}
 		if(!"".equals(param.key_ip_list)) {
-			query.append("and ip_list like '%'||?||'%'").append("\n");
+			query.append("AND ip_list like '%'||?||'%'").append("\n");
 			bind.add(param.key_ip_list);
 		}
 		if(!"".equals(param.key_other_desc)) {
-			query.append("and other_desc like '%'||?||'%'").append("\n");
+			query.append("AND other_desc like '%'||?||'%'").append("\n");
 			bind.add(param.key_other_desc);
 		}
 		if(!"".equals(param.key_allow_excp)) {
-			query.append("and allow_excp = ?").append("\n");
+			query.append("AND allow_excp = ?").append("\n");
 			bind.add(param.key_allow_excp);
 		}
 		
@@ -191,9 +231,9 @@ public List<IpamUserVo> db_user_list(ParameterVo param) throws IpamException {
     	for(Object b : bind) {
    			pstmt.setObject(paramIndex++, b);
     	}
-    	pstmt.setInt(paramIndex++, ((param.page_no - 1) * param.scale) + 1);
-		pstmt.setInt(paramIndex++, param.page_no * param.scale);
-		if(DEBUG) System.out.format("BETWEEN %d AND %d", ((param.page_no - 1) * param.scale) + 1, param.page_no * param.scale);
+    	pstmt.setInt(paramIndex++, param.getStartNo());
+		pstmt.setInt(paramIndex++, param.getEndNo());
+		if(DEBUG) System.out.format("BETWEEN %d AND %d", param.getStartNo(), param.getEndNo());
 
 		rs = pstmt.executeQuery();
     	
