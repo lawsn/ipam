@@ -72,7 +72,7 @@ ipam.user.process = function(frm, frm_list) {
  * 사용자 삭제
  */
 ipam.user.del = function(frm, user_id) {
-	if((typeof user_id) != 'string' || user_id != '') {
+	if((typeof user_id) != 'string' || user_id == '') {
 		alert('해당하는 사용자가 없습니다.');
 		return;
 	}
