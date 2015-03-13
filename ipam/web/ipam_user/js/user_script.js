@@ -15,10 +15,10 @@ ipam.user.search = function(frm) {
 			frm.key_allow_excp.value = '';
 		}
 	}else {
-		if(frm.key_user_id.value == '') {
-			alert("검색할 사번을 입력하여 주세요.");
-			return;
-		}
+//		if(frm.key_user_id.value == '') {
+//			alert("검색할 사번을 입력하여 주세요.");
+//			return;
+//		}
 		frm.key_user_name.value = '';
 		frm.key_ip_list.value = '';
 		frm.key_allow_excp.value = '';

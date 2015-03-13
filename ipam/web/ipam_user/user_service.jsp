@@ -512,4 +512,25 @@ public List<IpamUserVo> db_user_by_ip(String user_ip) throws IpamException {
 		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
 	}
 }
+
+/**
+ * 입력한 ID에 일치하는 사용자가 있는지 조회
+ */
+public boolean has_by_id(String user_id) throws IpamException {
+	if(db_user_by_id(user_id) != null) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * 입력한 IP에 일치하는 사용자가 있는지 조회
+ */
+public boolean has_by_ip(String user_ip) throws IpamException {
+	List<IpamUserVo> list = db_user_by_ip(user_ip);
+	if(list != null && list.size() > 0) {
+		return true;
+	}
+	return false;
+}
 %>	
