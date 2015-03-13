@@ -12,7 +12,12 @@ ROOT/ipam_user/js/user_script.js
 ROOT/ipam_user/user_template.jsp[메인템플릿으로 GNB/LNB/Footer를 가지고 레이아웃을 결정한다.]
 ROOT/ipam_user/user_service.jsp[서비스구현체]
 ROOT/ipam_user/user_list.jsp[사용자목록]
-ROOT/ipam_user/user_manage.jsp[사용자추가/수정/삭제 화면 및 로직을 관리한다.]
+ROOT/ipam_user/user_manage.jsp[사용자추가/수정 화면]
+ROOT/ipam_user/user_process.jsp[사용자추가/수정/삭제 로직]
+
+추가된 라이브러리(jar)
+ROOT/WEB-INF/lib/ojdbc7.jar[jdk1.7 사용]
+ROOT/WEB-INF/lib/json_simple-1.1.jar[json object 사용]
 
 
 ※ ROOT/ipam_user 디렉토리가 기본경로로, 이후 내용에서는 이부분을 제외하고 작성합니다.
@@ -77,6 +82,23 @@ user_manage.jsp
 
 
 
+┌────────────────────┐
+│import/ipam_init.jsp│
+└────────────────────┘
+  △[include]
+┌───────────────────────┐
+│import/DBConnection.jsp│
+└───────────────────────┘
+  △[include]
+----------------
+user_service.jsp
+----------------
+  △[include]
+----------------
+user_process.jsp
+----------------
+
+
 
 
 3. 프로그램설명
@@ -104,8 +126,10 @@ GNB, LNB, FOOTER 영역의 내용을 template에서 가지나,
 user_list.jsp 에서는 CONTENTS 영역의 실제 사용자목록 화면을 가진다.
 또한, 사용자목록을 가져오는 서비스를 호출하는 로직도 가진다.
 
-user_manage.jsp 에서는 사용자 추가/수정 화면이 있고,
-특정 파라미터 정보에 따라서, 사용자 추가/수정 및 삭제하는 서비스를 호출하기도 한다.
+user_manage.jsp 에서는 사용자 추가/수정 화면을 관리한다.
+
+user_process.jsp 에서는 처리구분에 따라서 사용자 추가/수정 및 삭제하는 서비스를 호출한다.
+결과는 json 형태로 반환한다.
 
 
 

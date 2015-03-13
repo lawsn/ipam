@@ -5,6 +5,7 @@
 ParameterVo param = new ParameterVo();
 param.page_no = toInt(request.getParameter("page_no"), 1);
 param.view_count = toInt(request.getParameter("view_count"), 10);
+param.add_condition = nullToBlank(request.getParameter("add_condition"));
 param.key_user_name = nullToBlank(request.getParameter("key_user_name"));
 param.key_user_id = nullToBlank(request.getParameter("key_user_id"));
 param.key_ip_list = nullToBlank(request.getParameter("key_ip_list"));
@@ -18,6 +19,7 @@ if(userList == null) {
 %>
 <form name="frm_list" method="post" onsubmit="return false;">
 	<input type="hidden" name="page_no" value="<%=param.page_no%>" />
+	<input type="hidden" id="add_condition" name="add_condition" value="<%=param.add_condition%>"/>
 	<input type="hidden" name="key_user_name" value="<%=param.key_user_name%>" />
 	<input type="hidden" name="key_user_id" value="<%=param.key_user_id%>" />
 	<input type="hidden" name="key_ip_list" value="<%=param.key_ip_list%>" />
@@ -26,23 +28,21 @@ if(userList == null) {
 	<h5 class="subtitle">Recently Viewed Pages</h5>
 	<div class="divider30"></div>
 
-	<h4 class="widgettitle">Data Table<a href="javascript:ipam.user.manage();" class="manage-user"><span class="icon-user"></span></a></h4>
+	<h4 class="widgettitle">Data Table</span></a></h4>
 	<div id="dyntable_wrapper" class="dataTables_wrapper" role="grid">
 		<div id="dyntable_length" class="dataTables_length">
-			<label>Show 
-			<select size="1" name="view_count" aria-controls="dyntable" onchange="ipam.user.list(document.forms['frm_list'], 1);">
-			<option value="1"<%if(param.view_count==1){%> selected="selected"<%}%>>1</option>
-			<option value="2"<%if(param.view_count==2){%> selected="selected"<%}%>>2</option>
-			<option value="5"<%if(param.view_count==5){%> selected="selected"<%}%>>5</option>
-			<option value="10"<%if(param.view_count==10){%> selected="selected"<%}%>>10</option>
-			<option value="25"<%if(param.view_count==25){%> selected="selected"<%}%>>25</option>
-			<option value="50"<%if(param.view_count==50){%> selected="selected"<%}%>>50</option>
-			<option value="100"<%if(param.view_count==100){%> selected="selected"<%}%>>100</option>
-			</select>
-			entries</label>
+			<div>
+			<input type="text" id="tempkey_user_id" value="<%=param.key_user_id%>" aria-controls="dyntable" placeholder="사번">
+			<input type="button" id="search" value="검색"/> <input type="button" id="add_condition_btn" value="상세"/>
+			</div>
+			<div id="add_condition_view"<%="true".equals(param.add_condition) ? "" : "style=\"display: none;\""%>>
+				<input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" />
+				<label><input type="checkbox" id="tempkey_allow_excp" value="t" <%="t".equals(param.key_allow_excp)?"checked":""%>/> 예외허용</label>
+				<input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" />
+			</div>
 		</div>
 		<div class="dataTables_filter" id="dyntable_filter">
-			<label>Search: <input type="text" id="tempkey_user_id" value="<%=param.key_user_id%>" aria-controls="dyntable" onkeyup="ipam.user.search(document.forms['frm_list']);"></label>
+			<input type="button" id="addUser" value="사용자추가" onclick="ipam.user.manage();"/>
 		</div>
 		<table id="dyntable" class="table table-bordered responsive dataTable" aria-describedby="dyntable_info">
 			<colgroup>
@@ -113,6 +113,38 @@ if(userList == null) {
 </form>
 <script type="text/javascript">
 jQuery(document).ready(function() {
+	
+	<%--------------------------------------
+	-- search --
+	----------------------------------------%>
+	jQuery('#add_condition_btn').click(function() {
+		jQuery('#add_condition').val(function() {
+			if(this.value == 'true') {
+				jQuery('#add_condition_view').fadeOut(10);
+				return '';
+			}else {
+				jQuery('#add_condition_view').fadeIn(10);
+				return 'true';
+			}
+		});
+	});
+	
+	jQuery('#tempkey_user_id').keyup(function(e) {
+		if(e.which == 13) {
+			ipam.user.search(document.forms['frm_list']);
+		}
+	});
+	jQuery('#search').click(function() {
+		ipam.user.search(document.forms['frm_list']);
+	});
+	
+// 	jQuery('#add_condition').click(function() {
+// 		if(jQuery(this).attr('checked') == 'checked') {
+// 			jQuery('#add_condition_view').show();
+// 		}else {
+// 			jQuery('#add_condition_view').hide();
+// 		}
+// 	});
 	
 	<%--------------------------------------
 	-- paging --

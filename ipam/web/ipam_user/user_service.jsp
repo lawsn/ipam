@@ -64,6 +64,7 @@ public class ParameterVo {
 	public int view_count;
 	public int total_count;
 
+	public String add_condition;
 	public String key_user_name;
 	public String key_user_id;
 	public String key_ip_list;
@@ -169,7 +170,6 @@ public int getCount(Connection conn, String subQuery, Object... bind) throws Ipa
 
 
 /**
- * @TODO 검색조건 처리 
  * ipam_user 테이블 목록 조회
  * @param param 검색조건
  */
@@ -364,5 +364,152 @@ public void db_user_delete(String user_id) throws IpamException {
         if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
         if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
+}
+
+/**
+ * ipam_user 테이블 조회 by user_id
+ */
+public IpamUserVo db_user_by_id(String user_id) throws IpamException {
+
+	if(user_id == null || user_id.length() == 0) {
+		return null;
+	}
+
+	Connection conn = null;
+	ResultSet rs = null;
+	PreparedStatement pstmt = null;
+	StringBuilder query = null;
+	
+    IpamUserVo ipamUserVo = null;
+    
+	try{
+		conn = getConnection();
+		conn.setAutoCommit(false);		
+	
+		//-------------------------------------------
+		// Query section
+		//-------------------------------------------
+		query = new StringBuilder();
+		query.append("SELECT user_name,user_id,ip_list,other_desc,allow_excp").append("\n");
+		query.append(",reg_date, change_date").append("\n");
+		query.append("FROM ipam_user").append("\n");
+		query.append("WHERE user_id = ?").append("\n");
+		
+		pstmt = conn.prepareStatement(query.toString());
+		if(DEBUG) System.out.format("QUERY=%s", query.toString());
+		
+   		pstmt.setString(1, user_id);
+		if(DEBUG) System.out.format("USER_ID=%s", user_id);
+
+		rs = pstmt.executeQuery();
+    	
+    	if(rs.next()) {
+    		
+    		ipamUserVo = new IpamUserVo();
+    		ipamUserVo.user_name = rs.getString("user_name");
+    		ipamUserVo.user_id = rs.getString("user_id");
+    		ipamUserVo.ip_list = rs.getString("ip_list");
+    		ipamUserVo.other_desc = rs.getString("other_desc");
+    		ipamUserVo.allow_excp = rs.getString("allow_excp");
+    		ipamUserVo.reg_date = rs.getString("reg_date");
+    		ipamUserVo.change_date = rs.getString("change_date");
+    	}
+    	
+    	return ipamUserVo;
+    	
+	} catch(SQLException ex) {
+		throw new IpamException("data", ex);
+	} catch (Exception ex) {
+		throw new IpamException("data", ex);
+	} finally{
+		if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+		if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+	}
+}
+
+/**
+ * ipam_user 테이블 조회 by ip
+ */
+public List<IpamUserVo> db_user_by_ip(String user_ip) throws IpamException {
+
+	if(user_ip == null || user_ip.length() == 0) {
+		return null;
+	}
+	
+	Connection conn = null;
+	ResultSet rs = null;
+	PreparedStatement pstmt = null;
+	StringBuilder query = null;
+	
+	List<IpamUserVo> mCurrentList = null;
+    IpamUserVo ipamUserVo = null;
+    
+    boolean isExist = false;
+    
+	try{
+		conn = getConnection();
+		conn.setAutoCommit(false);		
+	
+		//-------------------------------------------
+		// Query section
+		//-------------------------------------------
+		query = new StringBuilder();
+		query.append("SELECT user_name,user_id,ip_list,other_desc,allow_excp").append("\n");
+		query.append(",reg_date, change_date").append("\n");
+		query.append("FROM ipam_user").append("\n");
+		query.append("WHERE ip_list like '%'||?||'%'").append("\n");
+		
+		pstmt = conn.prepareStatement(query.toString());
+		if(DEBUG) System.out.format("QUERY=%s", query.toString());
+		
+   		pstmt.setString(1, user_ip);
+		if(DEBUG) System.out.format("Search IP=%s", user_ip);
+
+		rs = pstmt.executeQuery();
+    	
+		mCurrentList = new ArrayList<IpamUserVo>();
+    	while(rs.next()) {
+    		String _temp = rs.getString("ip_list");
+    		if(_temp == null || _temp.length() == 0) {
+    			continue;
+    		}
+    		String[] ips = _temp.split(",");
+    		if(ips == null || ips.length == 0) {
+    			continue;
+    		}
+    		
+    		isExist = false;
+    		for(String ip : ips) {
+    			if(user_ip.equals(ip)) {
+    				isExist = true;
+    				break;
+    			}
+    		}
+    		if(!isExist) {
+    			continue;
+    		}
+    		
+    		ipamUserVo = new IpamUserVo();
+    		ipamUserVo.user_name = rs.getString("user_name");
+    		ipamUserVo.user_id = rs.getString("user_id");
+    		ipamUserVo.ip_list = rs.getString("ip_list");
+    		ipamUserVo.other_desc = rs.getString("other_desc");
+    		ipamUserVo.allow_excp = rs.getString("allow_excp");
+    		ipamUserVo.reg_date = rs.getString("reg_date");
+    		ipamUserVo.change_date = rs.getString("change_date");
+    	}
+    	
+    	return mCurrentList;
+    	
+	} catch(SQLException ex) {
+		throw new IpamException("data", ex);
+	} catch (Exception ex) {
+		throw new IpamException("data", ex);
+	} finally{
+		if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+		if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+	}
 }
 %>	

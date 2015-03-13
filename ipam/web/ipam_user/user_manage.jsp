@@ -2,51 +2,56 @@
 <%@ page import="java.io.*,java.util.*,java.lang.*,java.net.*" %>
 <%@ include file="./user_service.jsp" %>
 <%
-String proc = nullToBlank(request.getParameter("proc"));
-if("cteate".equals(proc)) {
-	// check dupl.. if dupl then return;
-}
-if("create".equals(proc) || "update".equals(proc)) {
-	IpamUserVo userVo = new IpamUserVo();
-	userVo.user_id = request.getParameter("user_id");
-	userVo.user_name = request.getParameter("user_name");
-	userVo.ip_list = request.getParameter("ip_list");
-	userVo.other_desc = request.getParameter("other_desc");
-	userVo.allow_excp = request.getParameter("allow_excp");
-	db_user_manage(userVo);
-	return;
-}
+String process = "create";
+String user_id = null;
+IpamUserVo selectedUserVo = null;
 
-String user_id = nullToBlank(request.getParameter("user_id"));
+user_id = nullToBlank(request.getParameter("user_id"));
 if("undefined".equals(user_id)) {
 	user_id = "";
 }
 
-if("delete".equals(proc)) {
-	db_user_delete(user_id);
-	out.println("{'DELETE':'SUCCESS'}");
-	return;
+if(!"".equals(user_id)) {
+	process = "update";
+	selectedUserVo = db_user_by_id(user_id);
 }
 %>
-	<form name="frm_manage" method="post" action="./ipam_user_manage.jsp" accept-charset="euc-kr">
-	<input type="hidden" name="proc" value="<%="".equals(user_id)?"create":"update"%>" />
-	<ul>
-		<li><input type="text" name="user_name" placeholder="이름" /></li>
-		<li>
-		<%if("".equals(user_id)) {%>
-			<input type="text" name="user_id" placeholder="사번" />
+	<form name="frm_manage" method="post">
+	<input type="hidden" name="proc" value="<%=process%>" />
+	<div id="dyntable_length" class="dataTables_length">
+		<%if("create".equals(process)) {%>
+			<label><input type="text" name="user_id" placeholder="사번" /></label>
 		<%}else{%>
-			<input type="hidden" name="user_id" value="<%=user_id%>" /><%=user_id%>
+			<label style="padding-bottom: 10px;"><strong>사번 : <%=user_id%></strong></label>
+			<input type="hidden" name="user_id" value="<%=user_id%>" />
 		<%}%>
-		</li>
-		<li><input type="text" name="ip_list" placeholder="사용자IP (여러개일 경우 , 로 구분)" /></li>
-		<li><input type="text" name="other_desc" placeholder="비고" /></li>
-		<li><input type="checkbox" name="allow_excp" value="t" />예외허용</li>
-	</ul>
-	<input type="button" onclick="ipam.user.closeLayer();" value="취소"/> <input type="button" onclick="ipam.user.process(document.forms['frm_manage'], document.forms['frm_list']);" value="확인"/>
+		<label><input type="text" name="user_name" placeholder="이름" /></label>
+		<label><input type="text" name="ip_list" placeholder="사용자IP (여러개일 경우 , 로 구분)" /></label>
+		<label><input type="text" name="other_desc" placeholder="비고" /></label>
+		<label><input type="checkbox" name="allow_excp" value="t" /> 예외허용</label>
+	</div>
+	<div style="padding-top: 10px; text-align: center;">
+		<input type="button" id="xx" value="취소"/> <input type="button" id="ok" value="확인"/>
+	</div>
 	</form>
                     
 <script type="text/javascript">
 jQuery(document).ready(function() {
+	<%if(selectedUserVo != null) {%>
+	var f = document.forms['frm_manage'];
+	f.user_name.value = '<%=selectedUserVo.user_name%>';
+	f.user_id.value = '<%=selectedUserVo.user_id%>';
+	f.ip_list.value = '<%=selectedUserVo.ip_list%>';
+	f.other_desc.value = '<%=selectedUserVo.other_desc%>';
+	if(<%="t".equals(selectedUserVo.allow_excp)%>) {
+		f.allow_excp.checked = 'checked';
+	}
+	<%}%>
+	jQuery('#xx').click(function() {
+		ipam.user.closeLayer();
+	});
+	jQuery('#ok').click(function() {
+		ipam.user.process(document.forms['frm_manage'], document.forms['frm_list']);
+	});
 });
 </script>
