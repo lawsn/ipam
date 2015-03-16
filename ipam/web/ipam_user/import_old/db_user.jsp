@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=euc-kr" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.HashMap"%>
@@ -102,9 +102,11 @@ public List<HashMap> db_user_list() throws IpamException
   } catch (Exception ex) {
   		throw new IpamException("insert", ex);
   } finally{
-	  
-		closeDB(rs, stmt, conn, null);
-	  
+	   try{
+		   closeDB(rs, stmt, conn, null);
+	  }catch(Exception e){
+	    e.printStackTrace();
+	  }
   }
   
 }
@@ -139,9 +141,8 @@ public void db_user_insert(HashMap userItem) throws IpamException {
     } catch (Exception ex) {
     	throw new IpamException("insert", ex);
 	} finally {
-		closeDB(null, pstmt, conn);
-        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
+        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
 }
 
@@ -175,84 +176,10 @@ public void db_user_update(HashMap userItem) throws IpamException {
     	   throw new IpamException("update", ex);
            	
 	} finally {
-		closeDB(null, pstmt, conn);
-        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
+        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
 }
-
-
-
-
-public void db_user_update_access_info(String uid, String last_access_ip, String last_access_time) throws IpamException {
-	
-	Connection conn = null;
-    PreparedStatement pstmt = null;
-    
-    try {
-        conn = getConnection();
-        String query = "UPDATE ipam_user SET last_access_ip =?, last_access_time =?";
-               query+=" WHERE user_id=?";
-        
-        
-        pstmt = conn.prepareStatement(query);
-        	  
-		pstmt.setString(1, last_access_ip);
-		pstmt.setString(2, last_access_time);
-		pstmt.setString(3, uid);
-		
-        pstmt.executeUpdate();
-        
-    } catch(SQLException ex) {
-        throw new IpamException("user access update:: "+ex.toString());
-        
-    } catch (Exception ex) {
-    	   throw new IpamException("user access update:: "+ex.toString());
-           	
-	} finally {
-		closeDB(null, pstmt, conn);
-        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
-    }
-}
-
-
-
-public void db_user_update_batch_flag(String flag, String uid) throws IpamException {
-	
-	Connection conn = null;
-    PreparedStatement pstmt = null;
-    
-    try {
-        conn = getConnection();
-        String query = "UPDATE ipam_user SET batch_updated_flag =?";
-        if(uid!=null){
-        	query+=" WHERE user_id=?";
-        }
-        
-        pstmt = conn.prepareStatement(query);
-          
-        String change_date = getCurrentTime3(); 	  
-        	  
-		pstmt.setString(1, flag);
-		if(uid!=null)
-			pstmt.setString(2, uid);
-		
-        pstmt.executeUpdate();
-        
-    } catch(SQLException ex) {
-        throw new IpamException("batch update:: "+ex.toString());
-        
-    } catch (Exception ex) {
-    	   throw new IpamException("batch update:: "+ex.toString());
-           	
-	} finally {
-		closeDB(null, pstmt, conn);
-        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
-    }
-}
-
 
 public void db_user_delete(String user_id) throws IpamException {
 	
@@ -267,13 +194,11 @@ public void db_user_delete(String user_id) throws IpamException {
         pstmt.executeUpdate();        	
     	
     } catch(SQLException ex) {
-        throw new IpamException("delete:: "+ex.toString());
-    } catch (Exception ex) {
-    	throw new IpamException("delete:: "+ex.toString());
-	}finally {
-		closeDB(null, pstmt, conn);
-        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
+        throw new IpamException("delete", ex);
+        
+    } finally {
+        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
 }
 
@@ -313,16 +238,12 @@ public int getCount(String user_id, String user_name) throws IpamException {
         return count;
         
     } catch(SQLException ex) {
-        throw new IpamException("getCount:: "+ex.toString());
-        
-    }catch(Exception ex) {
-        throw new IpamException("getCount:: "+ex.toString());
+        throw new IpamException("getCount", ex);
         
     } finally {
-    	closeDB(rs, stmt, conn, null);
-        //if (rs != null) try { rs.close(); } catch(Exception ex) {}
-        //if (stmt != null) try { stmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
+        if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+        if (stmt != null) try { stmt.close(); } catch(SQLException ex) {}
+        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
 }
 
@@ -407,9 +328,6 @@ public List<HashMap> db_user_search(String user_id, String user_name, String ip_
            	item.put("allow_excp", rs.getString("allow_excp"));
            	item.put("reg_date", rs.getString("reg_date"));
            	item.put("change_date", rs.getString("change_date"));
-           	item.put("change_date", rs.getString("change_date"));
-           	item.put("last_access_ip", rs.getString("last_access_ip"));
-           	item.put("last_access_time", rs.getString("last_access_time"));
              	
 			mCurrentList.add(item);
              	
@@ -425,70 +343,12 @@ public List<HashMap> db_user_search(String user_id, String user_name, String ip_
 		
     	throw new IpamException("Search", ex);
 	} finally {
-		closeDB(rs, stmt, conn, null);
-        //if (rs != null) try { rs.close(); } catch(Exception ex) {}
-        //if (stmt != null) try { stmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
+        if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+        if (stmt != null) try { stmt.close(); } catch(SQLException ex) {}
+        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
     }
 	
 }
-
-public List<HashMap> db_user_search_batch_updated_flag(String flag) throws IpamException {
-	
-    Connection conn = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-    
-    List<HashMap> mCurrentList;
-    
-    try {
-    
-   	    conn = getConnection();
-        String queary = "SELECT * FROM ipam_user ";
-    
-       queary+=" WHERE ";
-       queary+=" batch_updated_flag = "+"'"+flag+"' ";
-       queary+=" ORDER BY reg_date ASC ";
-        	
-       System.out.println("search queary="+queary);		
-       stmt = conn.createStatement();
-       rs = stmt.executeQuery(queary);
-        
-        mCurrentList = new java.util.ArrayList<HashMap>();
-        
-        while(rs.next()) {
-        	
-        	HashMap item = new HashMap();
-         	item.put("user_id", rs.getString("user_id"));
-           	item.put("user_name", rs.getString("user_name"));
-           	item.put("ip_list", rs.getString("ip_list"));
-           	item.put("other_desc", rs.getString("other_desc"));
-           	item.put("allow_excp", rs.getString("allow_excp"));
-           	item.put("reg_date", rs.getString("reg_date"));
-           	item.put("change_date", rs.getString("change_date"));
-           	
-			mCurrentList.add(item);
-             	
-        }
-     
-        return mCurrentList;
-        
-        
-    } catch(SQLException ex) {
-        throw new IpamException("Search Flag:: "+ex.toString());
-        
-    } catch (Exception ex) {
-		
-    	throw new IpamException("Search Flag:: "+ex.toString());
-	} finally {
-		closeDB(rs, stmt, conn, null);
-        //if (rs != null) try { rs.close(); } catch(Exception ex) {}
-        //if (stmt != null) try { stmt.close(); } catch(Exception ex) {}
-        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
-    }
-	
-}
-
 
 
 

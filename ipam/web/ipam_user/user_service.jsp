@@ -162,9 +162,13 @@ public int getCount(Connection conn, String subQuery, Object... bind) throws Ipa
     } catch(SQLException ex) {
         throw new IpamException("getCount", ex);
         
+    } catch(Exception ex) {
+        throw new IpamException("getCount", ex);
+        
     } finally {
-        if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+    	closeDB(rs, pstmt, null);
+        //if (rs != null) try { rs.close(); } catch(Exception ex) {}
+        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
     }
 }
 
@@ -242,13 +246,13 @@ public List<IpamUserVo> db_user_list(ParameterVo param) throws IpamException {
     		
     		vo = new IpamUserVo();
     		vo.rnum = rs.getInt("rnum");
-    		vo.user_name = rs.getString("user_name");
-    		vo.user_id = rs.getString("user_id");
-    		vo.ip_list = rs.getString("ip_list");
-    		vo.other_desc = rs.getString("other_desc");
-    		vo.allow_excp = rs.getString("allow_excp");
-    		vo.reg_date = rs.getString("reg_date");
-    		vo.change_date = rs.getString("change_date");
+    		vo.user_name = nullToBlank(rs.getString("user_name"));
+    		vo.user_id = nullToBlank(rs.getString("user_id"));
+    		vo.ip_list = nullToBlank(rs.getString("ip_list"));
+    		vo.other_desc = nullToBlank(rs.getString("other_desc"));
+    		vo.allow_excp = nullToBlank(rs.getString("allow_excp"));
+    		vo.reg_date = nullToBlank(rs.getString("reg_date"));
+    		vo.change_date = nullToBlank(rs.getString("change_date"));
     		
          	mCurrentList.add(vo);
     	}
@@ -256,13 +260,16 @@ public List<IpamUserVo> db_user_list(ParameterVo param) throws IpamException {
     	return mCurrentList;
     	
 	} catch(SQLException ex) {
+		ex.printStackTrace();
 		throw new IpamException("list", ex);
 	} catch (Exception ex) {
+		ex.printStackTrace();
 		throw new IpamException("list", ex);
 	} finally{
-		if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-		if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		closeDB(rs, pstmt, conn);
+		//if (rs != null) try { rs.close(); } catch(Exception ex) {ex.printStackTrace();}
+		//if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {ex.printStackTrace();}
+		//if (conn != null) try { conn.close(); } catch(Exception ex) {ex.printStackTrace();}
 	}
 }
 
@@ -328,14 +335,17 @@ public void db_user_manage(IpamUserVo userVo) throws IpamException {
         conn.commit();
         
     } catch(SQLException ex) {
-    	try { conn.rollback(); } catch(SQLException nohub) {}
+    	DB_rollback(conn);
+    	//try { conn.rollback(); } catch(SQLException nohub) {}
         throw new IpamException("manage", ex);
     } catch (Exception ex) {
-    	try { conn.rollback(); } catch(SQLException nohub) {}
+    	DB_rollback(conn);
+    	//try { conn.rollback(); } catch(SQLException nohub) {}
     	throw new IpamException("manage", ex);
 	} finally {
-        if (pstmt != null) try { pstmt.close(); } catch(SQLException nohub) {}
-        if (conn != null) try { conn.close(); } catch(SQLException nohub) {}
+		closeDB(null, pstmt, conn);
+        //if (pstmt != null) try { pstmt.close(); } catch(Exception nohub) {}
+        //if (conn != null) try { conn.close(); } catch(Exception nohub) {}
     }
 }
 
@@ -357,12 +367,19 @@ public void db_user_delete(String user_id) throws IpamException {
         conn.commit();
     	
     } catch(SQLException ex) {
-    	try { conn.rollback(); } catch(SQLException nohub) {}
+    	DB_rollback(conn);
+    	//try { conn.rollback(); } catch(Exception nohub) {nohub.printStackTrace();}
+        throw new IpamException("delete", ex);
+        
+    } catch(Exception ex) {
+    	DB_rollback(conn);
+    	//try { conn.rollback(); } catch(Exception nohub) {nohub.printStackTrace();}
         throw new IpamException("delete", ex);
         
     } finally {
-        if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-        if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+    	closeDB(null, pstmt, conn);
+        //if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
+        //if (conn != null) try { conn.close(); } catch(Exception ex) {}
     }
 }
 
@@ -406,13 +423,13 @@ public IpamUserVo db_user_by_id(String user_id) throws IpamException {
     	if(rs.next()) {
     		
     		ipamUserVo = new IpamUserVo();
-    		ipamUserVo.user_name = rs.getString("user_name");
-    		ipamUserVo.user_id = rs.getString("user_id");
-    		ipamUserVo.ip_list = rs.getString("ip_list");
-    		ipamUserVo.other_desc = rs.getString("other_desc");
-    		ipamUserVo.allow_excp = rs.getString("allow_excp");
-    		ipamUserVo.reg_date = rs.getString("reg_date");
-    		ipamUserVo.change_date = rs.getString("change_date");
+    		ipamUserVo.user_name = nullToBlank(rs.getString("user_name"));
+    		ipamUserVo.user_id = nullToBlank(rs.getString("user_id"));
+    		ipamUserVo.ip_list = nullToBlank(rs.getString("ip_list"));
+    		ipamUserVo.other_desc = nullToBlank(rs.getString("other_desc"));
+    		ipamUserVo.allow_excp = nullToBlank(rs.getString("allow_excp"));
+    		ipamUserVo.reg_date = nullToBlank(rs.getString("reg_date"));
+    		ipamUserVo.change_date = nullToBlank(rs.getString("change_date"));
     	}
     	
     	return ipamUserVo;
@@ -422,9 +439,10 @@ public IpamUserVo db_user_by_id(String user_id) throws IpamException {
 	} catch (Exception ex) {
 		throw new IpamException("data", ex);
 	} finally{
-		if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-		if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		closeDB(rs, pstmt, conn);
+		//if (rs != null) try { rs.close(); } catch(Exception ex) {}
+		//if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
+		//if (conn != null) try { conn.close(); } catch(Exception ex) {}
 	}
 }
 
@@ -507,9 +525,10 @@ public List<IpamUserVo> db_user_by_ip(String user_ip) throws IpamException {
 	} catch (Exception ex) {
 		throw new IpamException("data", ex);
 	} finally{
-		if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-		if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		closeDB(rs, pstmt, conn);
+		//if (rs != null) try { rs.close(); } catch(Exception ex) {}
+		//if (pstmt != null) try { pstmt.close(); } catch(Exception ex) {}
+		//if (conn != null) try { conn.close(); } catch(Exception ex) {}
 	}
 }
 

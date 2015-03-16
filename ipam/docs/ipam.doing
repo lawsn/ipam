@@ -2,3 +2,10 @@ select * from (
 select row_number() over(order by reg_date asc) as rnum,user_name,user_id,decode(allow_excp,'t','Yes','NO') as allow_excp,ip_list,other_desc
 from ipam_user
 ) where rnum between 1 and 10  
+
+
+String m_connection_driver = "oracle.jdbc.driver.OracleDriver";
+String m_connection_url = "jdbc:oracle:thin:@127.0.0.1:1521:MOTPDB";
+String m_user = "uhm_motp";
+String m_password = "uhm_motp";
+

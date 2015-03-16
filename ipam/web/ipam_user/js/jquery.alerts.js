@@ -36,7 +36,7 @@
 		overlayOpacity: .01,                // transparency level of overlay
 		overlayColor: '#FFF',               // base color of overlay
 		draggable: true,                    // make the dialogs draggable (requires UI Draggables plugin)
-		okButton: '&nbsp;OK&nbsp;',         // text for the OK button
+		okButton: '&nbsp;Ok&nbsp;',         // text for the OK button
 		cancelButton: '&nbsp;Cancel&nbsp;', // text for the Cancel button
 		dialogClass: null,                  // if specified, this class will be applied to all dialogs
 		
@@ -72,9 +72,9 @@
 			
 			$("BODY").append(
 			  '<div id="popup_container">' +
-			    '<h1 id="popup_title"></h1>' +
+			    '<h1 id="popup_title" align="center"></h1>' +
 			    '<div id="popup_content">' +
-			      '<div id="popup_message"></div>' +
+			      '<div id="popup_message" align="center"></div>' +
 				'</div>' +
 			  '</div>');
 			

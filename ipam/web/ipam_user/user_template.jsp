@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>UHM-MobileOTP Administrator </title>
+<title><%=m_IpamTitle%> </title>
 <link rel="stylesheet" href="./css/style.default.css" type="text/css" />
 <link rel="stylesheet" href="./css/responsive-tables.css">
 <link rel="stylesheet" href="./css/user_style.css">
@@ -42,9 +42,9 @@ jQuery(document).ready(function() {
         <div class="headerinner">
             <ul class="headmenu">
                 <li>
-                    <a class="dropdown-toggle" data-toggle="dropdown" data-target="#">
+                    <a  class="dropdown-toggle" data-toggle="dropdown" data-target="#">
                     <span class="head-icon head-users"></span>
-                    <span class="headmenu-label">사용자</span>
+                    <span  class="headmenu-label">사용자</span>
                     </a>
                 </li>
             </ul><!--headmenu-->
@@ -70,12 +70,8 @@ jQuery(document).ready(function() {
         </ul>
         
         <div class="pageheader">
-            <form action="/motp/admin/results.html" method="post" class="searchbar">
-                <input type="text" name="keyword" placeholder="To search type and hit enter..." />
-            </form>
             <div class="pageicon"><span class="iconfa-user"></span></div>
             <div class="pagetitle">
-                <h5>사용자 나열</h5>
                 <h1>사용자 나열</h1>
             </div>
         </div><!--pageheader-->

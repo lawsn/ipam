@@ -12,11 +12,19 @@ param.key_ip_list = nullToBlank(request.getParameter("key_ip_list"));
 param.key_other_desc = nullToBlank(request.getParameter("key_other_desc"));
 param.key_allow_excp = nullToBlank(request.getParameter("key_allow_excp"));
 
-List<IpamUserVo> userList = db_user_list(param);
-if(userList == null) {
-	userList = new ArrayList<IpamUserVo>();
+List<IpamUserVo> userList = null;
+try{
+	userList = db_user_list(param);
+	if(userList == null) {
+		userList = new ArrayList<IpamUserVo>();
+	}
+}catch(Exception ex){
+	ex.printStackTrace();
+	userList = new ArrayList<IpamUserVo>();		
 }
 %>
+
+<script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script>
 <form name="frm_list" method="post" onsubmit="return false;">
 	<input type="hidden" name="page_no" value="<%=param.page_no%>" />
 	<input type="hidden" id="add_condition" name="add_condition" value="<%=param.add_condition%>"/>
@@ -25,20 +33,18 @@ if(userList == null) {
 	<input type="hidden" name="key_ip_list" value="<%=param.key_ip_list%>" />
 	<input type="hidden" name="key_other_desc" value="<%=param.key_other_desc%>" />
 	<input type="hidden" name="key_allow_excp" value="<%=param.key_allow_excp%>" />
-	<h5 class="subtitle">Recently Viewed Pages</h5>
 	<div class="divider30"></div>
 
 	<h4 class="widgettitle">Data Table</span></a></h4>
 	<div id="dyntable_wrapper" class="dataTables_wrapper" role="grid">
-		<div id="dyntable_length" class="dataTables_length">
-			<div>
-			<input type="text" id="tempkey_user_id" value="<%=param.key_user_id%>" aria-controls="dyntable" placeholder="사번">
-			<input type="button" id="search" value="검색"/> <input type="button" id="add_condition_btn" value="상세"/>
-			</div>
+	<div id="dyntable_length" class="dataTables_length">
+			<label>사번 <input type="text" id="tempkey_user_id" value="<%=param.key_user_id%>" placeholder="사번" style=" width: auto !important; margin: 0;">
+				<input type="button" id="search" value="검색"/> <input type="button" id="add_condition_btn" value="상세"/>
+			</label>
 			<div id="add_condition_view"<%="true".equals(param.add_condition) ? "" : "style=\"display: none;\""%>>
-				<input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" />
-				<label><input type="checkbox" id="tempkey_allow_excp" value="t" <%="t".equals(param.key_allow_excp)?"checked":""%>/> 예외허용</label>
-				<input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" />
+				<label>이름 <input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" style=" width: auto !important; margin-top: 5px;"/></label>
+				<label><input type="checkbox" id="tempkey_allow_excp" value="t" <%="t".equals(param.key_allow_excp)?"checked":""%> style="margin: 0;"/> 예외허용</label>
+				<label style="margin-left: 15px;">IP <input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" style=" width: auto !important; margin-top: 5px;" /></label>
 			</div>
 		</div>
 		<div class="dataTables_filter" id="dyntable_filter">
@@ -62,22 +68,22 @@ if(userList == null) {
 					<th class="center head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 258px;">예외허용</th>
 					<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 339px;">IP목록</th>
 					<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Delete: activate to sort column ascending" style="width: 186px;">변경/삭제</th>
-					<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending" style="width: 186px;">비고</th>
+					<th class="center head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending" style="width: 186px;">비고</th>
 				</tr>
 			</thead>
 			<tbody role="alert" aria-live="polite" aria-relevant="all">
 			<%for(IpamUserVo user : userList) {%>
-				<tr class="gradeX odd">
-				<td class="center "><%=user.rnum%></td>
-				<td class=" "><%=user.user_name%></td>
-				<td class=" "><%=user.user_id%></td>
-				<td class="center "><%=user.allow_excp%></td>
-				<td class="center "><%=user.joinIpList("<br/>")%></td>
-				<td class="centeralign">
-					<a href="#//" class="updaterow"><span onclick="ipam.user.manage('<%=user.user_id%>');" class="icon-pencil"></span></a>
-					<a href="#//" class="deleterow"><span onclick="ipam.user.del(document.forms['frm_list'], '<%=user.user_id%>');" class="icon-trash"></span></a>
-				</td>
-				<td class=" "><%=user.other_desc%></td>
+				<tr class="gradeX ">
+					<td class="center "><%=user.rnum%></td>
+					<td class=" "><%=user.user_name%></td>
+					<td class=" "><%=user.user_id%></td>
+					<td class="center "><%=user.allow_excp%></td>
+					<td class="center "><%=user.joinIpList("<br/>")%></td>
+					<td class="centeralign">
+						<a href="#//" class="updaterow"><span onclick="ipam.user.manage('<%=user.user_id%>');" class="icon-pencil" style="padding-right: 5px;" title="사용자수정"></span></a>
+						<a href="#//" class="deleterow"><span onclick="ipam.user.del(document.forms['frm_list'], '<%=user.user_id%>');" class="icon-trash" title="사용자삭제"></span></a>
+					</td>
+					<td class=" "><%=user.other_desc%></td>
 				</tr>
 			<%}%>
 			</tbody>
@@ -115,6 +121,12 @@ if(userList == null) {
 jQuery(document).ready(function() {
 	
 	<%--------------------------------------
+	-- style --
+	----------------------------------------%>
+	jQuery('table tbody tr:even').addClass('even');
+	jQuery('table tbody tr:odd').addClass('odd');
+	
+	<%--------------------------------------
 	-- search --
 	----------------------------------------%>
 	jQuery('#add_condition_btn').click(function() {
@@ -129,7 +141,7 @@ jQuery(document).ready(function() {
 		});
 	});
 	
-	jQuery('#tempkey_user_id').keyup(function(e) {
+	jQuery('#tempkey_user_id,#tempkey_user_name,#tempkey_ip_list').keyup(function(e) {
 		if(e.which == 13) {
 			ipam.user.search(document.forms['frm_list']);
 		}

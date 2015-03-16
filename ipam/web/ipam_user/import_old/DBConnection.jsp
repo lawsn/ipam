@@ -41,7 +41,7 @@ public String base64decoding(String encodedString)
 //*********************************************************
 // getConnection
 //*********************************************************
-public Connection getConnection() throws Exception
+public Connection getConnection()
 {
 		Connection conn = null;
 		
@@ -57,40 +57,11 @@ public Connection getConnection() throws Exception
 	    conn = DriverManager.getConnection(props.getProperty("connection.url"), props);		  
 	  }catch(Exception e){
 	  	e.printStackTrace();
-	  	throw e;
 	  }
 
 	  
     return conn;
 }
-
-//*********************************************************
-//getConnection
-//*********************************************************
-public Connection getConnectionMysql() throws Exception
-{
-		Connection conn = null;
-		
-		try
-		{
-			Properties props = new Properties();
-			props.put("connection.driver", m_nac_connection_driver);
-			props.put("connection.url", m_nac_connection_url);
-			props.put("user", m_nac_user);
-			props.put("password", m_nac_password);
-	
-			Class.forName(props.getProperty("connection.driver"));
-	    conn = DriverManager.getConnection(props.getProperty("connection.url"), props);		  
-	  }catch(Exception e){
-	  	e.printStackTrace();
-	  	throw e;
-	  }
-
-	  
- return conn;
-}
-
-
 
 public void DB_commit(Connection conn)
 {
@@ -114,55 +85,44 @@ public void DB_rollback(Connection conn)
 	  }
 }
 
-public void closeDB(ResultSet rs, PreparedStatement pstmt, Connection conn)
-{
-	  try{
-	    	
-	      if(rs!=null)  rs.close();
-	      
-		  }catch(Exception e1){
-		    e1.printStackTrace();
-		  }
-		  
-		  try{
-		    if(pstmt!=null) pstmt.close();
-		  }catch(Exception e1){
-		    e1.printStackTrace();
-		  }
 
-		   try{
-		       if(conn!=null) 	    conn.close();
-		  }catch(Exception e1){
-		    e1.printStackTrace();
-		  }	  
-}
 
 public String closeDB(ResultSet rs, Statement stmt, Connection conn, Statement stmtCount)
 {
     String result = "";
     try{
     	
-      if(rs!=null)  rs.close();
-      
+      if(rs!=null)
+	      rs.close();
+	      result +=" rs close ok";
 	  }catch(Exception e1){
 	    e1.printStackTrace();
 	  }
 	  
 	  try{
-	    if(stmt!=null) stmt.close();
+	    if(stmt!=null)
+	    stmt.close();
+	    result +=" stmt close ok";
 	  }catch(Exception e1){
 	    e1.printStackTrace();
 	  }
 
 	  try{
-	    	if(stmtCount!=null) stmtCount.close();
+	    if(stmtCount!=null)
+	      stmtCount.close();
+	    result +=" stmtCount close ok";
 	  }catch(Exception e1){
 	    e1.printStackTrace();
 	  }
 	  
+	  
+	  
+	  
 	   try{
 	   
-	    if(conn!=null) 	    conn.close();
+	    if(conn!=null)
+	    conn.close();
+	    result +=" conn close ok";
 	  }catch(Exception e1){
 	    e1.printStackTrace();
 	  }	  

@@ -58,10 +58,12 @@ ipam.user.process = function(frm, frm_list) {
 			if((typeof data.RESULT) == 'string') {
 				if(data.RESULT == 'SUCCESS') {
 					ipam.user.list(frm_list);
-					alert('처리되었습니다.');
+					//alert('처리되었습니다.2222');
+					jAlert('처리되었습니다.', '사용자관리');
 					ipam.user.closeLayer();
 				}else {
-					alert(data.RESULT);
+					//alert(data.RESULT);
+					jAlert(data.RESULT, '사용자관리');
 				}
 			}
 		}
@@ -73,10 +75,14 @@ ipam.user.process = function(frm, frm_list) {
  */
 ipam.user.del = function(frm, user_id) {
 	if((typeof user_id) != 'string' || user_id == '') {
-		alert('해당하는 사용자가 없습니다.');
+		jAlert('해당하는 사용자가 없습니다.', '사용자관리');
+		//alert('해당하는 사용자가 없습니다.');
 		return;
 	}
-	if(confirm('사용자('+user_id+')를 삭제하시겠습니까?')) {
+	
+	jConfirm ('사용자('+user_id+')를 삭제하시겠습니까?', '사용자삭제', function(r){
+		if(r==true){
+	//if(confirm('사용자('+user_id+')를 삭제하시겠습니까?')) {
 		jQuery.ajax({
 			type : 'post',
 			url : './user_process.jsp',
@@ -86,14 +92,17 @@ ipam.user.del = function(frm, user_id) {
 				if((typeof data.RESULT) == 'string') {
 					if(data.RESULT == 'SUCCESS') {
 						ipam.user.list(frm);
-						alert('삭제되었습니다.');
+						jAlert('삭제되었습니다.', '사용자관리');
+						//alert('삭제되었습니다.');
 					}else {
-						alert(data.RESULT);
+						jAlert(data.RESULT, '사용자관리');
+						//alert(data.RESULT);
 					}
 				}
 			}
 		});		
-	}
+	 }
+	});
 };
 
 /**
@@ -104,55 +113,35 @@ ipam.user.openLayer = function(url, user_id) {
 	jQuery.post(url, 'user_id=' + user_id, function(data) {
 		
 		ipam.user.closeLayer();
-		var layer = jQuery('<div id="layerpopup" class="pop-layer"><div id="layercontents" class="pop-container"></div></div></div>');
-		jQuery('body').append(layer);
+		
+		var _mask = jQuery('<div id="layerpopupMask"></div>');
+		jQuery('body').append(_mask);
+		_mask.css({
+			'position': 'absolute',
+			'z-index': 99998,
+			'top': '0px',
+			'left': '0px',
+			'width': '100%',
+			'height': jQuery(document).height(),
+			'background': '#FFFFFF',
+			'filter': 'alpha(opacity=1)',
+			'opacity': '0.01'
+		});		
+
+		var _layer = jQuery('<div id="layerpopup" class="pop-layer"><div id="layercontents" class="pop-container"></div></div>');
+		jQuery('body').append(_layer);
 		jQuery('#layercontents').append(data);
 		
-		var temp = jQuery('#layerpopup');		//레이어의 id를 temp변수에 저장
-		var bg = temp.prev().hasClass('bg');	//dimmed 레이어를 감지하기 위한 boolean 변수
-	
-		if(bg){
-			jQuery('.layer').fadeIn();
-		}else{
-			temp.fadeIn();	//bg 클래스가 없으면 일반레이어로 실행한다.
-		}
-		
-		if(temp.height() > jQuery(window).height()) {
-			temp.css('top', '0px');
-		}else {
-			temp.css('top', (jQuery(window).height() / 2) - (temp.height() / 2) + jQuery(window).scrollTop());
-		}
-		
-		if(temp.width() > jQuery(window).width()) {
-			temp.css('left', '0px');
-		}else {
-			temp.css('left', (jQuery(window).width() / 2) - (temp.width() / 2) + jQuery(window).scrollLeft());
-		}
-		
-	
-//		// 화면의 중앙에 레이어를 띄운다.
-//		if (temp.outerHeight() < jQuery(document).height()) {
-//			temp.css('margin-top', '-'+(temp.outerHeight()/2)+'px');
-//		}else {
-//			temp.css('top', '0px');
-//		}
-//		if (temp.outerWidth() < jQuery(document).width()) {
-//			temp.css('margin-left', '-'+temp.outerWidth()/2+'px');
-//		}else {
-//			temp.css('left', '0px');
-//		}
-	
-		temp.find('a.cbtn').click(function(e){
-			if(bg){
-				jQuery('.layer').fadeOut();
-			}else{
-				temp.fadeOut();		//'닫기'버튼을 클릭하면 레이어가 사라진다.
-			}
+		var left = ( jQuery(window).scrollLeft() + (jQuery(window).width() - _layer.width()) / 2 );
+		var top = ( jQuery(window).scrollTop() + (jQuery(window).height() - _layer.height()) / 2 );
+		_layer.css({
+			'left':left,'top':top,
+			'position':'absolute',
+			'z-index':'99999'
 		});
-	
-		jQuery('.layer .bg').click(function(e){
-			jQuery('.layer').fadeOut();
-		});
+		jQuery('body').css('position','relative').append(_layer);		
+		
+		_layer.show();
 	});
 
 };
@@ -162,7 +151,7 @@ ipam.user.openLayer = function(url, user_id) {
  */
 ipam.user.closeLayer = function() {
 	
-	jQuery('#layerpopup').fadeOut(function() {
-		jQuery(this).remove();
-	});
+	jQuery('#layerpopup').remove();
+	jQuery('#layerpopupMask').remove();
+	
 };
