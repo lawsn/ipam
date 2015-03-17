@@ -58,8 +58,7 @@ body {
 body.errorpage { background: #fff url(../images/bg1.png);  }
 body.loginpage { background: #0866c6; }
 body.showLeftMenu {
-	background: url(../images/leftpanelbg.png) repeat-y 0 0,
-				   url(../images/bg1.png); }
+	background: url(../images/leftpanelbg.png) repeat-y 0 0; }
 
 a,a:hover,a:link,a:active,a:focus { outline: none; color: #0866c6; text-decoration: none; }
 a:hover { text-decoration: underline; }

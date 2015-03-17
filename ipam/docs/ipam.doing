@@ -9,3 +9,9 @@ String m_connection_url = "jdbc:oracle:thin:@127.0.0.1:1521:MOTPDB";
 String m_user = "uhm_motp";
 String m_password = "uhm_motp";
 
+
+
+1. 상단 "사용자"이미지에 ipam_user 링크 적용  (완료)
+
+2. IE8에서 반응형웹 적용
+   - 브라우저 가로 사이즈가 1024 이하 일 경우 좌측 메뉴 숨기기  (완료)
