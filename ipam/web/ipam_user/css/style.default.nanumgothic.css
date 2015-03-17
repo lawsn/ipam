@@ -54,7 +54,7 @@ h4 { font-size: 16px; }
 
 body {
 	background: url(../images/bg1.png); font-size: 12px;
-	font-family: 'RobotoRegular', 'Helvetica Neue', Helvetica, sans-serif; }
+	font-family: 'NanumGothic', 'Helvetica Neue', Helvetica, sans-serif; }
 body.errorpage { background: #fff url(../images/bg1.png);  }
 body.loginpage { background: #0866c6; }
 body.showLeftMenu {
@@ -64,7 +64,7 @@ body.showLeftMenu {
 a,a:hover,a:link,a:active,a:focus { outline: none; color: #0866c6; text-decoration: none; }
 a:hover { text-decoration: underline; }
 input,select,
-textarea,button { outline: none; font-size: 13px; font-family: 'RobotoRegular', 'Helvetica Neue', Helvetica, sans-serif; }
+textarea,button { outline: none; font-size: 13px; font-family: 'NanumGothic', 'Helvetica Neue', Helvetica, sans-serif; }
 strong { font-weight: normal; }
 label, input, textarea, select, button { font-size: 13px; }
 h1,h2,h3,h4,h5 { font-weight: normal; line-height: normal; }
@@ -1402,10 +1402,10 @@ ul.list-inline li { display: inline-block; margin: 0 5px 10px 0; }
 
 strong, .headmenu .nav-header,
 .nav-list .nav-header, .peoplelist .peopleinfo h4,
-.peoplelist .peopleinfo ul li span { font-family: 'RobotoBold', 'Helvetica Neue', Helvetica, sans-serif; }
+.peoplelist .peopleinfo ul li span { font-family: 'NanumGothicBold', 'Helvetica Neue', Helvetica, sans-serif; }
 .headmenu > li, .leftmenu .nav-tabs.nav-stacked a,
-.pagetitle h1, .shortcuts li { font-family: 'RobotoLight', 'Helvetica Neue', Helvetica, sans-serif; }
-.pagetitle h5, .subtitle { font-family: 'RobotoRegular', 'Helvetica Neue', Helvetica, sans-serif; }
+.pagetitle h1, .shortcuts li { font-family: 'NanumGothic', 'Helvetica Neue', Helvetica, sans-serif; }
+.pagetitle h5, .subtitle { font-family: 'NanumGothic', 'Helvetica Neue', Helvetica, sans-serif; }
 
 
 /*** FONT LATO ***/
@@ -1414,7 +1414,7 @@ strong, .headmenu .nav-header,
 .tabbedwizard .stepContainer h4, dt,
 .userloggedinfo .userinfo h5,
 .loginpanel .inputwrapper button,
-.userlist li .uinfo h5 { font-family: 'LatoBold', 'Helvetica Neue', Helvetica, sans-serif; font-weight: normal; }
+.userlist li .uinfo h5 { font-family: 'NanumGothicBold', 'Helvetica Neue', Helvetica, sans-serif; font-weight: normal; }
 
 
 
@@ -2083,5 +2083,4 @@ table td.center, table th.center { text-align: center; }
 
 
 
-
-
+body,table,input,textarea,select,button,ul,li,a,h5{font-family:NanumGothic,'³ª´®°íµñ',ng,sans-serif}

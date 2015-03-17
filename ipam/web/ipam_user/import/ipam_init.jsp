@@ -27,11 +27,14 @@ String m_NMAP_IP_LIST = "nip_list";
 //////////////////////////////////////////////////
 //DB Á¤º¸:oracle
 //////////////////////////////////////////////////
+// String m_connection_driver = "oracle.jdbc.driver.OracleDriver";
+// String m_connection_url = "jdbc:oracle:thin:@127.0.0.1:1521:IPAMDB";
+// String m_user = "ipam_user";
+// String m_password = "ipam_user";
 String m_connection_driver = "oracle.jdbc.driver.OracleDriver";
-String m_connection_url = "jdbc:oracle:thin:@127.0.0.1:1521:IPAMDB";
-String m_user = "ipam_user";
-String m_password = "ipam_user";
-
+String m_connection_url = "jdbc:oracle:thin:@127.0.0.1:1521:MOTPDB";
+String m_user = "uhm_motp";
+String m_password = "uhm_motp";
 
 %>
 

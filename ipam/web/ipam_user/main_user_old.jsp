@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" %>
+<%@ page contentType="text/html;charset=euc-kr" %>
 <%@ page import="java.io.*,java.util.*,java.lang.*,java.net.*" %>
 <%@ include file="./import/ipam_init.jsp" %>
 <%
@@ -12,7 +12,7 @@
 
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>UHM-MobileOTP Administrator </title>
 <link rel="stylesheet" href="css/style.default.css" type="text/css" />
@@ -51,7 +51,7 @@
                 <li>
                     <a class="dropdown-toggle" data-toggle="dropdown" data-target="#">
                     <span class="head-icon head-users"></span>
-                    <span class="headmenu-label">ì‚¬ìš©ìž</span>
+                    <span class="headmenu-label">»ç¿ëÀÚ</span>
                     </a>
                 </li>
             </ul><!--headmenu-->
@@ -63,7 +63,7 @@
         <div class="leftmenu">        
             <ul class="nav nav-tabs nav-stacked">
             	<li class="nav-header">Navigation</li>
-                <li class="active"><a href="main_user.jsp"><span class="iconfa-user"></span>ì‚¬ìš©ìž</a></li>
+                <li class="active"><a href="main_user.jsp"><span class="iconfa-user"></span>»ç¿ëÀÚ</a></li>
             </ul>
         </div><!--leftmenu-->
         
@@ -73,7 +73,7 @@
         
         <ul class="breadcrumbs">
             <li><a href="main_user.jsp"><i class="iconfa-home"></i></a> <span class="separator"></span></li>
-            <li>ì‚¬ìš©ìž</li>
+            <li>»ç¿ëÀÚ</li>
             <li class="right">
             </li>
         </ul>
@@ -84,8 +84,8 @@
             </form>
             <div class="pageicon"><span class="iconfa-user"></span></div>
             <div class="pagetitle">
-                <h5>ì‚¬ìš©ìž ë‚˜ì—´</h5>
-                <h1>ì‚¬ìš©ìž ë‚˜ì—´</h1>
+                <h5>»ç¿ëÀÚ ³ª¿­</h5>
+                <h1>»ç¿ëÀÚ ³ª¿­</h1>
             </div>
         </div><!--pageheader-->
         
@@ -122,13 +122,13 @@
                     </colgroup>
                     <thead>
                         <tr role="row">
-                 <th class="head0 nosort sorting_asc" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Number: activate to sort column ascending" style="width: 50px;">ë²ˆí˜¸</th>
-                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Rendering engine: activate to sort column ascending" style="width: 301px;">ì‚¬ìš©ìžì´ë¦„</th>
-                        	<th class="head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 370px;">ì‚¬ë²ˆ</th>
-                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 339px;">IPëª©ë¡</th>
-                        	<th class="head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 258px;">ì˜ˆì™¸í—ˆìš©</th>
-                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending" style="width: 186px;">ë¹„ê³ </th>
-                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Delete: activate to sort column ascending" style="width: 186px;">ë³€ê²½/ì‚­ì œ</th>
+                 <th class="head0 nosort sorting_asc" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Number: activate to sort column ascending" style="width: 50px;">¹øÈ£</th>
+                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Rendering engine: activate to sort column ascending" style="width: 301px;">»ç¿ëÀÚÀÌ¸§</th>
+                        	<th class="head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending" style="width: 370px;">»ç¹ø</th>
+                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending" style="width: 339px;">IP¸ñ·Ï</th>
+                        	<th class="head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending" style="width: 258px;">¿¹¿ÜÇã¿ë</th>
+                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending" style="width: 186px;">ºñ°í</th>
+                        	<th class="head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Delete: activate to sort column ascending" style="width: 186px;">º¯°æ/»èÁ¦</th>
                         </tr>
                     </thead>
                     

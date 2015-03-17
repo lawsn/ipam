@@ -6,9 +6,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title><%=m_IpamTitle%> </title>
-<link rel="stylesheet" href="./css/style.default.css" type="text/css" />
-<link rel="stylesheet" href="./css/responsive-tables.css">
-<link rel="stylesheet" href="./css/user_style.css">
+<link rel="stylesheet" href="./css/style.default.nanumgothic.css" type="text/css" />
+<link rel="stylesheet" href="./css/responsive-tables.css" type="text/css" />
+<link rel="stylesheet" href="./css/user_style.css" type="text/css" />
+
 <script type="text/javascript" src="./js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="./js/jquery-migrate-1.1.1.min.js"></script>
 <script type="text/javascript" src="./js/jquery-ui-1.10.3.min.js"></script>
@@ -21,7 +22,7 @@
 <script type="text/javascript" src="./js/responsive-tables.js"></script>
 <script type="text/javascript" src="./js/jquery.slimscroll.js"></script>
 <script type="text/javascript" src="./js/custom.js"></script>
-<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="./js/excanvas.min.js"></script><![endif]-->
+<!--[if IE]><script type="text/javascript" src="./js/css3-mediaqueries.js"></script><![endif]-->
 <script type="text/javascript" src="./js/user_script.js"></script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
@@ -41,8 +42,8 @@ jQuery(document).ready(function() {
         </div>
         <div class="headerinner">
             <ul class="headmenu">
-                <li>
-                    <a  class="dropdown-toggle" data-toggle="dropdown" data-target="#">
+                <li class="open" onclick="ipam.user.ipamuser();">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
                     <span class="head-icon head-users"></span>
                     <span  class="headmenu-label">사용자</span>
                     </a>
@@ -55,45 +56,12 @@ jQuery(document).ready(function() {
         <div class="leftmenu">        
             <ul class="nav nav-tabs nav-stacked">
             	<li class="nav-header">Navigation</li>
-                <li class="active"><a href="./user_template.jsp"><span class="iconfa-user"></span>사용자</a></li>
+                <li class="active" style="cursor: pointer;"><a href="./user_template.jsp"><span class="iconfa-user"></span>사용자</a></li>
             </ul>
         </div><!--leftmenu-->
     </div><!-- leftpanel -->
     
-    <div class="rightpanel">
-        
-        <ul class="breadcrumbs">
-            <li><a href="./user_template.jsp"><i class="iconfa-home"></i></a> <span class="separator"></span></li>
-            <li>사용자</li>
-            <li class="right">
-            </li>
-        </ul>
-        
-        <div class="pageheader">
-            <div class="pageicon"><span class="iconfa-user"></span></div>
-            <div class="pagetitle">
-                <h1>사용자 나열</h1>
-            </div>
-        </div><!--pageheader-->
-        
-        <div class="maincontent">
-            <div class="maincontentinner">
-                <div id="contents" class="row-fluid">
-                <%-- contents include --%>
-                </div><!--row-fluid-->
-                
-                <div class="footer">
-                    <div class="footer-left">
-                        <span>&copy; 2013. UHMSOFT Corporation. All Rights Reserved.</span>
-                    </div>
-                    <div class="footer-right">
-                        <span>Designed by: <a href="<%=m_IpamCompanyHome%>">UHMSOFT</a></span>
-                    </div>
-                </div><!--footer-->
-                
-            </div><!--maincontentinner-->
-        </div><!--maincontent-->
-        
+    <div class="rightpanel" id="contents">
     </div><!--rightpanel-->
     
 </div><!--mainwrapper-->

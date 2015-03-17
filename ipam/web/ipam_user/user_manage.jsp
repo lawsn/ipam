@@ -16,6 +16,7 @@ if(!"".equals(user_id)) {
 	selectedUserVo = db_user_by_id(user_id);
 }
 %>
+
 <script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script>
 
 	<form name="frm_manage" method="post">

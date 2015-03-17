@@ -1,6 +1,10 @@
 var ipam = {};
 ipam.user = {};
 
+ipam.user.ipamuser = function() {
+	location.href = './user_template.jsp';
+};
+
 /**
  * 검색하기
  */
