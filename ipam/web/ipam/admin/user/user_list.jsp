@@ -4,7 +4,7 @@
 <%
 ParameterVo param = new ParameterVo();
 param.page_no = toInt(request.getParameter("page_no"), 1);
-param.view_count = toInt(request.getParameter("view_count"), 10);
+param.view_count = toInt(request.getParameter("view_count"), 5);
 param.add_condition = nullToBlank(request.getParameter("add_condition"));
 param.key_user_name = nullToBlank(request.getParameter("key_user_name"));
 param.key_user_id = nullToBlank(request.getParameter("key_user_id"));
@@ -23,6 +23,7 @@ try{
 	userList = new ArrayList<IpamUserVo>();		
 }
 %>
+
 	<form name="frm_list" method="post" onsubmit="return false;">
 	<input type="hidden" name="page_no" value="<%=param.page_no%>" />
 	<input type="hidden" id="add_condition" name="add_condition" value="<%=param.add_condition%>"/>
@@ -38,12 +39,12 @@ try{
             </li>
         </ul>
         
-        <div class="pageheader">
+        <!-- <div class="pageheader">
             <div class="pageicon"><span class="iconfa-user"></span></div>
             <div class="pagetitle">
                 <h1>사용자 나열</h1>
             </div>
-        </div><!--pageheader-->
+        </div>--><!--pageheader-->
         
         <div class="maincontent">
             <div class="maincontentinner">
@@ -57,9 +58,9 @@ try{
 								<input class="btn-small btn-inverse" type="button" id="search" value="검색"/> <input class="btn-small btn-info" type="button" id="add_condition_btn" value="상세"/>
 							</label>
 							<div id="add_condition_view"<%="true".equals(param.add_condition) ? "" : "style=\"display: none;\""%>>
-								<label>이름 <input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" style=" width: auto !important; margin-top: 5px;"/></label>
-								<label style="margin-left: 15px;">IP <input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" style="margin-top: 5px;" /></label>
-								<label style="margin-left: 30px;"><input type="checkbox" id="tempkey_allow_excp" value="t" <%="t".equals(param.key_allow_excp)?"checked":""%> style="margin: 0;"/> 예외허용</label>
+								<label>이름 <input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" style=" width: auto !important; margin-top: 9px;"/></label>
+								<label style="margin-left: 14px;">IP <input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" style=" width: auto !important; margin-top: 0px;" /></label>
+								<label style="margin-left: 30px;"><input type="checkbox" id="tempkey_allow_excp" value="t" <%="t".equals(param.key_allow_excp)?"checked":""%> style="margin-top: 0px;"/> 예외허용</label>
 							</div>
 						</div>
 						<div class="dataTables_filter">
@@ -95,8 +96,8 @@ try{
 									<td class="center "><%=user.allow_excp%></td>
 									<td class="center "><%=user.joinIpList("<br/>")%></td>
 									<td class="centeralign">
-										<span class="icon-pencil" style="padding-right: 5px; cursor: pointer;" title="사용자수정" data-uid="<%=user.user_id%>"></span>
-										<span class="icon-trash" style="cursor: pointer;" title="사용자삭제" data-uid="<%=user.user_id%>"></span>
+										<a href="#//" class="updaterow"><span onclick="ipam.user.manage('<%=user.user_id%>');" class="icon-pencil" style="padding-right: 5px;" title="사용자수정"></span></a>
+										<a href="#//" class="deleterow"><span onclick="ipam.user.del(document.forms['frm_list'], '<%=user.user_id%>');" class="icon-trash" title="사용자삭제"></span></a>
 									</td>
 									<td class=" "><%=user.other_desc%></td>
 								</tr>
@@ -134,10 +135,10 @@ try{
                 
                 <div class="footer">
                     <div class="footer-left">
-                        <span>&copy; 2013. UHMSOFT Corporation. All Rights Reserved.</span>
+                        <span>&copy; <%=m_IpamCopyRights%></span>
                     </div>
                     <div class="footer-right">
-                        <span>Designed by: <a href="<%=m_IpamCompanyHome%>">UHMSOFT</a></span>
+                        <span>Designed by: <a href="<%=m_IpamCompanyHome%>"><%=m_IpamCompany%></a></span>
                     </div>
                 </div><!--footer-->
                 
@@ -178,16 +179,6 @@ jQuery(document).ready(function() {
 	});
 	
 	<%--------------------------------------
-	-- process --
-	----------------------------------------%>
-	jQuery('span.icon-trash').click(function() {
-		ipam.user.del(document.forms['frm_list'], jQuery(this).attr('data-uid'));
-	});
-	jQuery('span.icon-pencil').click(function() {
-		ipam.user.manage(jQuery(this).attr('data-uid'));
-	});
-	
-	<%--------------------------------------
 	-- paging --
 	----------------------------------------%>
 	var start_no = '<%=param.total_count%>';
@@ -198,7 +189,7 @@ jQuery(document).ready(function() {
 	if(<%=param.total_count > param.getEndNo()%>) {
 		end_no = <%=param.getEndNo()%>;
 	}
-	jQuery('#dyntable_info').html('Showing ' + start_no + ' to ' + end_no + ' of <%=param.total_count%> entries');
+	jQuery('#dyntable_info').html('전체:<%=param.total_count%>, 범위:' + start_no + ' - ' + end_no);
 	
 	if(<%=param.page_no == 1%>) { //First
 		jQuery('#dyntable_first').addClass('paginate_button_disabled');
