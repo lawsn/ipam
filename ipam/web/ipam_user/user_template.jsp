@@ -13,6 +13,7 @@
 <script type="text/javascript" src="./js/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="./js/jquery-migrate-1.1.1.min.js"></script>
 <script type="text/javascript" src="./js/jquery-ui-1.10.3.min.js"></script>
+<script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script>
 <script type="text/javascript" src="./js/modernizr.min.js"></script>
 <script type="text/javascript" src="./js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./js/jquery.cookie.js"></script>

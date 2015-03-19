@@ -129,7 +129,7 @@ ipam.user.openLayer = function(url, user_id) {
 			'height': jQuery(document).height(),
 			'background': '#FFFFFF',
 			'filter': 'alpha(opacity=1)',
-			'opacity': '0.01'
+			'opacity': '0.5'
 		});		
 
 		var _layer = jQuery('<div id="layerpopup" class="pop-layer"><div id="layercontents" class="pop-container"></div></div>');

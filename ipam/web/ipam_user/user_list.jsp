@@ -4,7 +4,7 @@
 <%
 ParameterVo param = new ParameterVo();
 param.page_no = toInt(request.getParameter("page_no"), 1);
-param.view_count = toInt(request.getParameter("view_count"), 2);
+param.view_count = toInt(request.getParameter("view_count"), 10);
 param.add_condition = nullToBlank(request.getParameter("add_condition"));
 param.key_user_name = nullToBlank(request.getParameter("key_user_name"));
 param.key_user_id = nullToBlank(request.getParameter("key_user_id"));
@@ -95,8 +95,8 @@ try{
 									<td class="center "><%=user.allow_excp%></td>
 									<td class="center "><%=user.joinIpList("<br/>")%></td>
 									<td class="centeralign">
-										<a href="#//" class="updaterow"><span onclick="ipam.user.manage('<%=user.user_id%>');" class="icon-pencil" style="padding-right: 5px;" title="사용자수정"></span></a>
-										<a href="#//" class="deleterow"><span onclick="ipam.user.del(document.forms['frm_list'], '<%=user.user_id%>');" class="icon-trash" title="사용자삭제"></span></a>
+										<span class="icon-pencil" style="padding-right: 5px; cursor: pointer;" title="사용자수정" data-uid="<%=user.user_id%>"></span>
+										<span class="icon-trash" style="cursor: pointer;" title="사용자삭제" data-uid="<%=user.user_id%>"></span>
 									</td>
 									<td class=" "><%=user.other_desc%></td>
 								</tr>
@@ -175,6 +175,16 @@ jQuery(document).ready(function() {
 	});
 	jQuery('#search').click(function() {
 		ipam.user.search(document.forms['frm_list']);
+	});
+	
+	<%--------------------------------------
+	-- process --
+	----------------------------------------%>
+	jQuery('span.icon-trash').click(function() {
+		ipam.user.del(document.forms['frm_list'], jQuery(this).attr('data-uid'));
+	});
+	jQuery('span.icon-pencil').click(function() {
+		ipam.user.manage(jQuery(this).attr('data-uid'));
 	});
 	
 	<%--------------------------------------

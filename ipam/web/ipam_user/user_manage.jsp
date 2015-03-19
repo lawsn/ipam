@@ -17,8 +17,6 @@ if(!"".equals(user_id)) {
 }
 %>
 
-<script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script>
-
 	<form name="frm_manage" method="post">
 	<input type="hidden" name="proc" value="<%=process%>" />
 	<h4 class="widgettitle">사용자 <%="create".equals(process)?"추가":"수정"%></span></a></h4>	
@@ -59,7 +57,7 @@ if(!"".equals(user_id)) {
 		</table>	
 	</div>
 	<div style="padding-top: 10px; text-align: center;">
-		<input class="btn" type="button" id="xx" value="취소"/> <input class="btn btn-info" type="button" id="ok" value="확인"/>
+		<input class="btn btn-info" type="button" id="ok" value="확인"/> <input class="btn" type="button" id="xx" value="취소"/>
 	</div>
 	</form>
                     
