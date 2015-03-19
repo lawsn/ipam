@@ -54,7 +54,7 @@ try{
 					<div id="dyntable_wrapper" class="dataTables_wrapper" role="grid">
 						<div id="dyntable_length" class="dataTables_length">
 							<label>사번 <input type="text" id="tempkey_user_id" value="<%=param.key_user_id%>" placeholder="사번" style=" width: auto !important; margin: 0;">
-								<input type="button" id="search" value="검색"/> <input type="button" id="add_condition_btn" value="상세"/>
+								<input class="btn-small btn-inverse" type="button" id="search" value="검색"/> <input class="btn-small btn-info" type="button" id="add_condition_btn" value="상세"/>
 							</label>
 							<div id="add_condition_view"<%="true".equals(param.add_condition) ? "" : "style=\"display: none;\""%>>
 								<label>이름 <input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" style=" width: auto !important; margin-top: 5px;"/></label>
@@ -62,8 +62,8 @@ try{
 								<label style="margin-left: 15px;">IP <input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" style=" width: auto !important; margin-top: 5px;" /></label>
 							</div>
 						</div>
-						<div class="dataTables_filter" id="dyntable_filter">
-							<input type="button" id="addUser" value="사용자추가" onclick="ipam.user.manage();"/>
+						<div class="dataTables_filter">
+							<input class="btn-small btn-danger" type="button" id="addUser" value="사용자추가" onclick="ipam.user.manage();"/>
 						</div>
 						<table id="dyntable" class="table table-bordered dataTable" aria-describedby="dyntable_info">
 							<colgroup>

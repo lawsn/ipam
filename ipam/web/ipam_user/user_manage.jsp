@@ -59,7 +59,7 @@ if(!"".equals(user_id)) {
 		</table>	
 	</div>
 	<div style="padding-top: 10px; text-align: center;">
-		<input type="button" id="xx" value="취소"/> <input type="button" id="ok" value="확인"/>
+		<input class="btn" type="button" id="xx" value="취소"/> <input class="btn btn-info" type="button" id="ok" value="확인"/>
 	</div>
 	</form>
                     
