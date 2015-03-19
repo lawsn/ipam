@@ -160,13 +160,14 @@ jQuery(document).ready(function() {
 	jQuery('#add_condition_btn').click(function() {
 		jQuery('#add_condition').val(function() {
 			if(this.value == 'true') {
-				jQuery('#add_condition_view').fadeOut(10);
+				jQuery('#add_condition_view').hide();
 				return '';
 			}else {
-				jQuery('#add_condition_view').fadeIn(10);
+				jQuery('#add_condition_view').show();
 				return 'true';
 			}
 		});
+		jQuery('#dyntable_paginate').css('position', 'absolute'); //IE7ȣȯ
 	});
 	
 	jQuery('#tempkey_user_id,#tempkey_user_name,#tempkey_ip_list').keyup(function(e) {

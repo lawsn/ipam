@@ -1,22 +1,24 @@
 user_list.jsp
-  <script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script> 제거
-  상세 검색조건 중 'IP'와 '예외허용' 조건의 위치 변경
+  - <script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script> 제거
+  - 상세 검색조건 중 'IP'와 '예외허용' 조건의 위치 변경
+  - 상세 검색 버튼 클릭 시 페이징 위치오류 수정
 
 
 user_template.jsp
-  <script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script> 추가
+  - <script type="text/javascript" src="js/jquery.alerts.js" charset="euc-kr"></script> 추가
 
 
 
 user_manage.jsp
-  확인/취소 버튼 좌/우 위치 변경
+  - 확인/취소 버튼 좌/우 위치 변경
 
 
 
-jquery.alerts.js
-  OK => 확인
-  Cancel => 취소
+user_script.js
+  - 사용자 추가/변경 시 유효성 검증 체크 추가
+
 
 
 custom.js
-  topbar (모바일 화면 변환 버튼) 제거
+  - topbar (모바일 화면 변환 버튼) 제거
+
