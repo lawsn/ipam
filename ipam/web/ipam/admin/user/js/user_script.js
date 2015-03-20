@@ -54,17 +54,21 @@ ipam.user.manage = function(user_id) {
  */
 ipam.user.process = function(frm, frm_list) {
 	// 입력값 validation
-	var user_id = frm.user_id.value.trim();
+	var user_id = jQuery.trim(frm.user_id.value);
 	if((typeof user_id) != 'string' || user_id.length == 0) {
-		jAlert('사번을 올바르게 입력 후<br />다시 시도하여 주십시요.', '사번 입력오류');
+		jAlert('사번을 올바르게 입력 후<br />다시 시도하여 주십시요.', '사번 입력오류', function() {
+			frm.user_id.focus();
+		});
 		return;
 	}
-	var user_name = frm.user_name.value.trim();
+	var user_name = jQuery.trim(frm.user_name.value);
 	if((typeof user_name) != 'string' || user_name.length == 0) {
-		jAlert('이름을 올바르게 입력 후<br />다시 시도하여 주십시요.', '이름 입력오류');
+		jAlert('이름을 올바르게 입력 후<br />다시 시도하여 주십시요.', '이름 입력오류', function() {
+			frm.user_name.focus();
+		});
 		return;
 	}
-	var ip_list = frm.ip_list.value.trim();
+	var ip_list = jQuery.trim(frm.ip_list.value);
 	var valid_ip = false;
 	if((typeof ip_list) == 'string' && ip_list.length > 0) {
 		var _ip = ip_list.split(',');
@@ -77,7 +81,9 @@ ipam.user.process = function(frm, frm_list) {
 		}
 	}
 	if(valid_ip == false) { // IP 입력 오류
-		jAlert('사용자 IP를 올바르게 입력 후<br />다시 시도하여 주십시요.', 'IP 입력오류');
+		jAlert('사용자 IP를 올바르게 입력 후<br />다시 시도하여 주십시요.', 'IP 입력오류', function() {
+			frm.ip_list.focus();
+		});
 		return;
 	}
 	

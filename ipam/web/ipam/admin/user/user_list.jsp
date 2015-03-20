@@ -66,7 +66,7 @@ try{
 						<div class="dataTables_filter">
 							<input class="btn-small btn-danger" type="button" id="addUser" value="사용자추가" onclick="ipam.user.manage();"/>
 						</div>
-						<table id="dyntable" class="table table-bordered dataTable" aria-describedby="dyntable_info">
+						<table id="dyntable" class="table table-bordered dataTable" aria-describedby="dyntable_info" style="border-right: 1px;">
 							<colgroup>
 								<col class="con0"  style="align: center; width: 10%">
 								<col class="con1"  style="width: 15%">
@@ -102,30 +102,33 @@ try{
 									<td class=" "><%=user.other_desc%></td>
 								</tr>
 							<%}%>
+							<%if(param.total_count == 0) {%>
+								<tr class=" ">
+									<td class="center " colspan="7">조회된 사용자가 없습니다.</td>
+								</tr>
+							<%}%>
 							</tbody>
 						</table>
 						<div class="dataTables_info" id="dyntable_info"> </div>
 						<div class="dataTables_paginate paging_full_numbers" id="dyntable_paginate">
 							<a class="first paginate_button" id="dyntable_first">First</a>
 							<a class="previous paginate_button" id="dyntable_previous">Previous</a>
-							<span>
-								<%
-								for(int iPage=param.getStartPageNo(); iPage<param.getStartPageNo()+g_scale; iPage++) {
-									if(iPage > param.getTotalPage()) {
-										break;
-									}
-									if(param.page_no == iPage) {
-								%>
-								<a tabindex="0" class="paginate_active"><%=iPage%></a>
-								<%
-									}else {
-								%>
-								<a tabindex="0" class="paginate_button move_page"><%=iPage%></a>
-								<%	
-									}
+							<%
+							for(int iPage=param.getStartPageNo(); iPage<param.getStartPageNo()+g_scale; iPage++) {
+								if(iPage > param.getTotalPage()) {
+									break;
 								}
-								%>
-							</span>
+								if(param.page_no == iPage) {
+							%>
+							<span><a tabindex="0" class="paginate_active"><%=iPage%></a></span>
+							<%
+								}else {
+							%>
+							<a tabindex="0" class="paginate_button move_page"><%=iPage%></a>
+							<%	
+								}
+							}
+							%>
 							<a class="next paginate_button" id="dyntable_next">Next</a>
 							<a class="last paginate_button" id="dyntable_last">Last</a>
 						</div>
@@ -221,7 +224,7 @@ jQuery(document).ready(function() {
 		});
 	}
 	
-	if(<%=param.page_no == param.getTotalPage()%>) { //Last
+	if(<%=param.total_count == 0 || param.page_no == param.getTotalPage()%>) { //Last
 		jQuery('#dyntable_last').addClass('paginate_button_disabled');
 	}else {
 		jQuery('#dyntable_last').click(function() {

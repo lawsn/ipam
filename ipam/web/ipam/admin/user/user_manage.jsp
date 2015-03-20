@@ -23,14 +23,14 @@ if(!"".equals(user_id)) {
 	<input type="hidden" name="proc" value="<%=process%>" />
 	<h4 class="widgettitle">사용자 <%="create".equals(process)?"추가":"수정"%></span></a></h4>	
 	<div class="dataTables_wrapper">
-		<table class="table table-bordered table-invoice">
+		<table class="table table-bordered table-invoice" style="border-right: 1px;">
 			<colgroup>
-				<col class="con1"  style="align: right; width: 20%">
-				<col class="con0"  style="width: 80%">
+				<col class="con1"  style="align: right; width: 25%">
+				<col class="con0"  style="width: 75%">
 			</colgroup>
 			<tbody role="alert" aria-live="polite" aria-relevant="all">
 				<tr class="gradeX ">
-					<td class="right "><label>사번</label></th>
+					<td class="right "><label><font color="red">*</font>사번</label></th>
 					<td class=" ">
 					<%if("create".equals(process)) {%>
 						<input type="text" name="user_id" placeholder="사번" />
@@ -40,11 +40,11 @@ if(!"".equals(user_id)) {
 					</td>
 				</tr>
 				<tr class="gradeX ">
-					<td class="right "><label>이름</label></th>
+					<td class="right "><label><font color="red">*</font>이름</label></th>
 					<td class=" "><input type="text" name="user_name" placeholder="이름" /></td>
 				</tr>
 				<tr class="gradeX ">
-					<td class="right "><label>사용자IP</label></th>
+					<td class="right "><label><font color="red">*</font>사용자IP</label></th>
 					<td class=" "><input type="text" name="ip_list" placeholder="사용자IP (여러개일 경우 , 로 구분)" /></td>
 				</tr>
 				<tr class="gradeX ">
