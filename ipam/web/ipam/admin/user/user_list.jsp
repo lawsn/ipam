@@ -170,7 +170,7 @@ jQuery(document).ready(function() {
 				return 'true';
 			}
 		});
-		jQuery('#dyntable_paginate').css('position', 'absolute'); //IE7ȣȯ
+		jQuery('#dyntable_paginate').css('position', 'relative').css('position', 'absolute'); //IE7ȣȯ
 	});
 	
 	jQuery('#tempkey_user_id,#tempkey_user_name,#tempkey_ip_list').keyup(function(e) {
@@ -233,18 +233,3 @@ jQuery(document).ready(function() {
 	}
 });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
