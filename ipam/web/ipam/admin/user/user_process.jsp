@@ -1,7 +1,11 @@
 <%@ page contentType="text/html;charset=euc-kr" %>
 <%@ page import="java.io.*,java.util.*,java.lang.*,java.net.*" %>
 <%@ include file="./user_service.jsp" %>
+
+
 <%
+
+String operator_id = "admin";
 String user_id = null;
 String proc = null;
 IpamUserVo selectedUserVo = null;
@@ -25,6 +29,12 @@ if("".equals(user_id)) {
 			result = "사용자가 존재하지 않습니다.";
 		}else {
 			db_user_delete(user_id);
+			
+			try{
+				db_audit("USER_DEL", operator_id, selectedUserVo);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}
 	}
 	
@@ -40,6 +50,15 @@ if("".equals(user_id)) {
 			userVo.other_desc = nullToBlank(request.getParameter("other_desc"));
 			userVo.allow_excp = nullToBlank(request.getParameter("allow_excp"));
 			db_user_manage(userVo);
+			
+			
+			try{
+				db_audit("USER_ADD", operator_id, userVo);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+
+			
 		}else {
 			result = "이미 존재하는 사용자입니다.";
 		}		
@@ -59,6 +78,13 @@ if("".equals(user_id)) {
 			userVo.other_desc = nullToBlank(request.getParameter("other_desc"));
 			userVo.allow_excp = nullToBlank(request.getParameter("allow_excp"));
 			db_user_manage(userVo);
+			
+			try{
+				db_audit("USER_MOD", operator_id, userVo);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
 		}		
 	}
 }

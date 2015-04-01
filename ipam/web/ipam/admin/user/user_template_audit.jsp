@@ -27,8 +27,7 @@
 <script type="text/javascript" src="./js/user_script.js"></script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	ipam.user.list();
-	
+	ipam.audit.list();
 });
 </script>
 </head>
@@ -44,13 +43,13 @@ jQuery(document).ready(function() {
         </div>-->
         <div class="headerinner">
             <ul class="headmenu">
-                <li class="open" onclick="ipam.user.ipamuser();"ahwl>
+                <li class="close" onclick="ipam.user.ipamuser();">
                     <a class="dropdown-toggle" data-traget="dropdown">
                     <span class="head-icon head-users"></span>
                     <span  class="headmenu-label">사용자</span>
                     </a>
                 </li>
-                <li class="close" onclick="ipam.user.ipamaudit();">
+                <li class="open" onclick="ipam.user.ipamaudit();">
                     <a class="dropdown-toggle" data-traget="dropdown">
                     <span class="head-icon head-audit"></span>
                     <span  class="headmenu-label">감사기록</span>
@@ -66,14 +65,13 @@ jQuery(document).ready(function() {
             	<li class="nav-header">Navigation</li>
                 <li class="active" style="cursor: pointer;"><a href="./user_template.jsp"><span class="iconfa-user"></span>사용자</a></li>
             </ul>
-        </div> --leftmenu--
-    </div>    -- leftpanel -->
+        </div> leftmenu--
+    </div> leftpanel -->
     
     <div class="rightpanel" id="contents">
     </div><!--rightpanel-->
     
 </div><!--mainwrapper-->
-
 </body>
 
 </html>

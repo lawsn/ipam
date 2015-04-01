@@ -152,6 +152,7 @@ h1,h2,h3,h4,h5 { font-weight: normal; line-height: normal; }
 
 .head-message { background-image: url(../images/icons/message.png); }
 .head-users { background-image: url(../images/icons/users.png); }
+.head-audit { background-image: url(../images/icons/bar.png); }
 .head-bar { background-image: url(../images/icons/bar.png); }
 
 .viewmore a { font-size: 11px; text-transform: uppercase; font-size: 11px !important; }

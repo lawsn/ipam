@@ -1,40 +1,40 @@
 <%@ page contentType="text/html;charset=euc-kr" %>
 <%@ page import="java.io.*,java.util.*,java.lang.*,java.net.*" %>
-<%@ include file="./user_service.jsp" %>
+<%@ include file="./audit_service.jsp" %>
 <%
-ParameterVo param = new ParameterVo();
+ParameterAudit param = new ParameterAudit();
 param.page_no = toInt(request.getParameter("page_no"), 1);
 param.view_count = toInt(request.getParameter("view_count"), 5);
 param.add_condition = nullToBlank(request.getParameter("add_condition"));
-param.key_user_name = nullToBlank(request.getParameter("key_user_name"));
-param.key_user_id = nullToBlank(request.getParameter("key_user_id"));
+param.key_audit_type = nullToBlank(request.getParameter("key_audit_type"));
+param.key_operator_id = nullToBlank(request.getParameter("key_operator_id"));
 param.key_ip_list = nullToBlank(request.getParameter("key_ip_list"));
 param.key_other_desc = nullToBlank(request.getParameter("key_other_desc"));
 param.key_allow_excp = nullToBlank(request.getParameter("key_allow_excp"));
 
-List<IpamUserVo> userList = null;
+List<IpamAuditVo> auditList = null;
 try{
-	userList = db_user_list(param);
-	if(userList == null) {
-		userList = new ArrayList<IpamUserVo>();
+	auditList = db_audit_list(param);
+	if(auditList == null) {
+		auditList = new ArrayList<IpamAuditVo>();
 	}
 }catch(Exception ex){
 	ex.printStackTrace();
-	userList = new ArrayList<IpamUserVo>();		
+	auditList = new ArrayList<IpamAuditVo>();		
 }
 %>
 
 	<form name="frm_list" method="post" onsubmit="return false;">
 	<input type="hidden" name="page_no" value="<%=param.page_no%>" />
 	<input type="hidden" id="add_condition" name="add_condition" value="<%=param.add_condition%>"/>
-	<input type="hidden" name="key_user_name" value="<%=param.key_user_name%>" />
-	<input type="hidden" name="key_user_id" value="<%=param.key_user_id%>" />
+	<input type="hidden" name="key_audit_type" value="<%=param.key_audit_type%>" />
+	<input type="hidden" name="key_operator_id" value="<%=param.key_operator_id%>" />
 	<input type="hidden" name="key_ip_list" value="<%=param.key_ip_list%>" />
 	<input type="hidden" name="key_other_desc" value="<%=param.key_other_desc%>" />
 	<input type="hidden" name="key_allow_excp" value="<%=param.key_allow_excp%>" />
         <ul class="breadcrumbs">
             <!-- <li><a href="#"><i class="iconfa-home"></i></a> <span class="separator"></span></li>
-            <li>사용자</li>-->
+            <li>감사기록</li>-->
             <li class="right">
             </li>
         </ul>
@@ -42,72 +42,73 @@ try{
         <!-- <div class="pageheader">
             <div class="pageicon"><span class="iconfa-user"></span></div>
             <div class="pagetitle">
-                <h1>사용자 나열</h1>
+                <h1>감사기록 나열</h1>
             </div>
         </div>--><!--pageheader-->
         
-			        <div class="maincontent">
-			            <div class="maincontentinner">
-			                <div class="row-fluid">
-								<div class="divider0"></div>
-							
-								<!-- <h4 class="widgettitle">사용자</span></a></h4>-->
-								
+        <div class="maincontent">
+            <div class="maincontentinner">
+                <div class="row-fluid">
+					<div class="divider0"></div>
 				
-			        
+					<!-- <h4 class="widgettitle">감사기록</span></a></h4>-->
 					<div id="dyntable_wrapper" class="dataTables_wrapper" role="grid">
 						<div id="dyntable_length" class="dataTables_length">
-							<label>사번 <input type="text" id="tempkey_user_id" value="<%=param.key_user_id%>" placeholder="사번" style=" width: auto !important; margin: 0;">
-								<input class="btn-small btn-inverse" type="button" id="search" value="검색"/> <input class="btn-small btn-info" type="button" id="add_condition_btn" value="상세"/>
+							<label>관리자아이디 <input type="text" id="tempkey_operator_id" value="<%=param.key_operator_id%>" placeholder="사번" style=" width: auto !important; margin: 0;">
+								<input class="btn-small btn-inverse" type="button" id="search" value="검색"/> <!-- <input class="btn-small btn-info" type="button" id="add_condition_btn" value="상세"/>-->
 							</label>
-							<div id="add_condition_view"<%="true".equals(param.add_condition) ? "" : "style=\"display: none;\""%>>
-								<label>이름 <input type="text" id="tempkey_user_name" value="<%=param.key_user_name%>" aria-controls="dyntable" placeholder="이름" style=" width: auto !important; margin-top: 9px;"/></label>
+							<!-- <div id="add_condition_view"<%="true".equals(param.add_condition) ? "" : "style=\"display: none;\""%>>
+								<label>이름 <input type="text" id="tempkey_audit_type" value="<%=param.key_audit_type%>" aria-controls="dyntable" placeholder="이름" style=" width: auto !important; margin-top: 9px;"/></label>
 								<label style="margin-left: 14px;">IP <input type="text" id="tempkey_ip_list" value="<%=param.key_ip_list%>" aria-controls="dyntable" placeholder="IP" style=" width: auto !important; margin-top: 0px;" /></label>
 								<label style="margin-left: 30px;"><input type="checkbox" id="tempkey_allow_excp" value="t" <%="t".equals(param.key_allow_excp)?"checked":""%> style="margin-top: 0px;"/> 예외허용 검색</label>
-							</div>
+							</div>-->
 						</div>
-						<div class="dataTables_filter">
-							<input class="btn-small btn-inverse" type="button" id="addUser" value="사용자추가" onclick="ipam.user.manage();"/>
-						</div>
+						<!-- <div class="dataTables_filter">
+							<input class="btn-small btn-inverse" type="button" id="addUser" value="사용자추가" onclick="ipam.audit.manage();"/>
+						</div>-->
 						<table id="dyntable" class="table table-bordered dataTable" aria-describedby="dyntable_info" style="border-right: 1px;">
 							<colgroup>
-								<col class="con0"  style="align: center; width: 10%">
-								<col class="con1"  style="width: 15%">
-								<col class="con0"  style="width: 15%">
-								<col class="con1"  style="width: 10%">
-								<col class="con0"  style="width: 15%">
-								<col class="con1"  style="width: 10%">
-								<col class="con1"  style="width: 25%">
+								<col class="con0"  style="align: center; width: 10%"><!-- num -->
+								<col class="con1"  style="width: 10%"><!-- audit_type -->
+								<col class="con1"  style="width: 10%"><!-- operator_id -->
+								<col class="con1"  style="width: 10%"><!-- allow_excp -->
+								<col class="con1"  style="width: 15%"><!-- other_desc -->
+								<col class="con1"  style="width: 20%"><!-- ip_list -->
+								<!-- <col class="con1"  style="width: 10%">-- view -->
+								<col class="con1"  style="width: 10%"><!-- reg_date -->								
 							</colgroup>
 							<thead>
 								<tr role="row">
 									<th class="center head0 nosort sorting_asc" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Number: activate to sort column ascending">번호</th>
-									<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Rendering engine: activate to sort column ascending">사용자이름</th>
-									<th class="center head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">사번</th>
+									<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Rendering engine: activate to sort column ascending">타입</th>
+									<th class="center head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Browser: activate to sort column ascending">관리자아이디</th>
 									<th class="center head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Engine version: activate to sort column ascending">예외허용</th>
 									<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Platform(s): activate to sort column ascending">IP목록</th>
-									<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Delete: activate to sort column ascending">변경/삭제</th>
 									<th class="center head1 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">비고</th>
+									<!--<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="Delete: activate to sort column ascending">변경/삭제</th>-->
+									<th class="center head0 sorting" role="columnheader" tabindex="0" aria-controls="dyntable" rowspan="1" colspan="1" aria-label="CSS grade: activate to sort column ascending">등록일</th>
 								</tr>
 							</thead>
 							<tbody role="alert" aria-live="polite" aria-relevant="all">
-							<%for(IpamUserVo user : userList) {%>
+							<%for(IpamAuditVo audit : auditList) {%>
 								<tr class=" ">
-									<td class="center "><%=user.rnum%></td>
-									<td class=" "><%=user.user_name%></td>
-									<td class=" "><%=user.user_id%></td>
-									<td class="center "><%=user.allow_excp%></td>
-									<td class="center "><%=user.joinIpList("<br/>")%></td>
-									<td class="centeralign">
-										<a href="#//" class="updaterow"><span onclick="ipam.user.manage('<%=user.user_id%>');" class="icon-pencil" style="padding-right: 5px;" title="사용자수정"></span></a>
-										<a href="#//" class="deleterow"><span onclick="ipam.user.del(document.forms['frm_list'], '<%=user.user_id%>');" class="icon-trash" title="사용자삭제"></span></a>
-									</td>
-									<td class=" "><%=user.other_desc%></td>
+									<td class="center "><%=audit.rnum%></td>
+									<td class="center "><%=audit.audit_type%></td>
+									<td class="center "><%=audit.operator_id%></td>
+									<td class="center "><%=audit.allow_excp%></td>
+									<td class="center "><%=audit.joinIpList("<br/>")%></td>
+									<td class=" "><%=audit.other_desc%></td>
+									<!-- <td class="centeralign">
+										<a href="#//" class="updaterow"><span onclick="ipam.audit.manage('<%=audit.operator_id%>');" class="icon-pencil" style="padding-right: 5px;" title="사용자수정"></span></a>
+										<a href="#//" class="deleterow"><span onclick="ipam.audit.del(document.forms['frm_list'], '<%=audit.operator_id%>');" class="icon-trash" title="사용자삭제"></span></a>
+									</td>-->
+									<td class="center "><%=audit.reg_date%></td>
+									
 								</tr>
 							<%}%>
 							<%if(param.total_count == 0) {%>
 								<tr class=" ">
-									<td class="center " colspan="7">조회된 사용자가 없습니다.</td>
+									<td class="center " colspan="7">조회된 내역이 없습니다.</td>
 								</tr>
 							<%}%>
 							</tbody>
@@ -176,13 +177,13 @@ jQuery(document).ready(function() {
 		jQuery('#dyntable_paginate').css('position', 'relative').css('position', 'absolute'); //IE7호환
 	});
 	
-	jQuery('#tempkey_user_id,#tempkey_user_name,#tempkey_ip_list').keyup(function(e) {
+	jQuery('#tempkey_operator_id,#tempkey_audit_type,#tempkey_ip_list').keyup(function(e) {
 		if(e.which == 13) {
-			ipam.user.search(document.forms['frm_list']);
+			ipam.audit.search(document.forms['frm_list']);
 		}
 	});
 	jQuery('#search').click(function() {
-		ipam.user.search(document.forms['frm_list']);
+		ipam.audit.search(document.forms['frm_list']);
 	});
 	
 	<%--------------------------------------
@@ -202,7 +203,7 @@ jQuery(document).ready(function() {
 		jQuery('#dyntable_first').addClass('paginate_button_disabled');
 	}else {
 		jQuery('#dyntable_first').click(function() {
-			ipam.user.list(document.forms['frm_list'], 1);
+			ipam.audit.list(document.forms['frm_list'], 1);
 		});
 	}
 	
@@ -210,20 +211,20 @@ jQuery(document).ready(function() {
 		jQuery('#dyntable_previous').addClass('paginate_button_disabled');
 	}else {
 		jQuery('#dyntable_previous').click(function() {
-			ipam.user.list(document.forms['frm_list'], <%=param.getStartPageNo() - 1%>);
+			ipam.audit.list(document.forms['frm_list'], <%=param.getStartPageNo() - 1%>);
 		});
 	}
 	
 	jQuery('a.move_page').click(function() { //Page
 		var no = parseInt(jQuery(this).text(), 10);
-		ipam.user.list(document.forms['frm_list'], no);
+		ipam.audit.list(document.forms['frm_list'], no);
 	});
 	
 	if(<%=param.getTotalPage() <= param.getStartPageNo() + g_scale - 1%>) { //Next
 		jQuery('#dyntable_next').addClass('paginate_button_disabled');
 	}else {
 		jQuery('#dyntable_next').click(function() {
-			ipam.user.list(document.forms['frm_list'], <%=param.getStartPageNo() + g_scale%>);
+			ipam.audit.list(document.forms['frm_list'], <%=param.getStartPageNo() + g_scale%>);
 		});
 	}
 	
@@ -231,11 +232,8 @@ jQuery(document).ready(function() {
 		jQuery('#dyntable_last').addClass('paginate_button_disabled');
 	}else {
 		jQuery('#dyntable_last').click(function() {
-			ipam.user.list(document.forms['frm_list'], <%=param.getTotalPage()%>);
+			ipam.audit.list(document.forms['frm_list'], <%=param.getTotalPage()%>);
 		});
 	}
-	
-	//jQuery('form:first *:input[type!=hidden]:first').focus();
-	
 });
 </script>

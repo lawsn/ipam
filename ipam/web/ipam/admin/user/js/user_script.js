@@ -1,9 +1,37 @@
 var ipam = {};
 ipam.user = {};
+ipam.audit = {};
+
+
+ipam.user.trim = function(s) {
+	  s += ''; // 숫자라도 문자열로 변환
+	  return s.replace(/^\s*|\s*$/g, '');
+};
+
+/*********************
+ * 특수문자 체크
+**********************/
+ipam.user.isSpacChar = function(string) {
+	  //var stringRegx=/^[0-9a-zA-Z가-힝]*$/; 
+	  var stringRegx = /[~!@\#$%<>^&*\()\-=+_\’]/gi; 
+	  var isValid = false; 
+	  if(stringRegx.test(string)) { 
+	       isValid = true; 
+	  } 
+	        
+	  return isValid; 
+		 
+};
+
 
 ipam.user.ipamuser = function() {
 	location.href = './user_template.jsp';
 };
+
+ipam.user.ipamaudit = function() {
+	location.href = './user_template_audit.jsp';
+};
+
 
 /**
  * 검색하기
@@ -12,6 +40,11 @@ ipam.user.search = function(frm) {
 	frm.key_user_id.value = jQuery('#tempkey_user_id').val();
 	if(jQuery('#add_condition').val() == 'true') {
 		frm.key_user_name.value = jQuery('#tempkey_user_name').val();
+		if( ipam.user.isSpacChar(frm.key_user_name.value)){
+			jAlert('특수문자는 사용할수 없습니다.이름을 올바르게 입력 후<br />다시 시도하여 주십시요.', '검색어 입력오류');
+			return;
+		}
+		
 		frm.key_ip_list.value = jQuery('#tempkey_ip_list').val();
 		if(jQuery('#tempkey_allow_excp').attr('checked') == 'checked') {
 			frm.key_allow_excp.value = 't';
@@ -30,6 +63,34 @@ ipam.user.search = function(frm) {
 	ipam.user.list(frm, 1);
 };
 
+ipam.audit.search = function(frm) {
+	frm.key_operator_id.value = jQuery('#tempkey_operator_id').val();
+	if(jQuery('#add_condition').val() == 'true') {
+		frm.key_audit_type.value = jQuery('#tempkey_audit_type').val();
+		if( ipam.user.isSpacChar(frm.key_audit_type.value)){
+			jAlert('특수문자는 사용할수 없습니다.타입을 올바르게 입력 후<br />다시 시도하여 주십시요.', '검색어 입력오류');
+			return;
+		}
+		
+		frm.key_ip_list.value = jQuery('#tempkey_ip_list').val();
+		if(jQuery('#tempkey_allow_excp').attr('checked') == 'checked') {
+			frm.key_allow_excp.value = 't';
+		}else {
+			frm.key_allow_excp.value = '';
+		}
+	}else {
+//		if(frm.key_user_id.value == '') {
+//			alert("검색할 사번을 입력하여 주세요.");
+//			return;
+//		}
+		frm.key_audit_type.value = '';
+		frm.key_ip_list.value = '';
+		frm.key_allow_excp.value = '';
+	}
+	ipam.audit.list(frm, 1);
+};
+
+
 /**
  * 목록보기
  */
@@ -41,6 +102,20 @@ ipam.user.list = function(frm, page_no) {
 		jQuery('#contents').html(data);
 	});
 };
+
+/**
+ * 목록보기
+ */
+ipam.audit.list = function(frm, page_no) {
+	if((typeof page_no) == 'number') {
+		frm.page_no.value = page_no;
+	}
+	jQuery.post('./audit_list.jsp', jQuery(frm).serialize(), function(data) {
+		jQuery('#contents').html(data);
+	});
+};
+
+
 
 /**
  * 사용자관리 팝업
@@ -96,11 +171,9 @@ ipam.user.process = function(frm, frm_list) {
 			if((typeof data.RESULT) == 'string') {
 				if(data.RESULT == 'SUCCESS') {
 					ipam.user.list(frm_list);
-					//alert('처리되었습니다.2222');
 					jAlert('처리되었습니다.', '사용자관리');
 					ipam.user.closeLayer();
 				}else {
-					//alert(data.RESULT);
 					jAlert(data.RESULT, '사용자관리');
 				}
 			}
@@ -156,7 +229,7 @@ ipam.user.openLayer = function(url, user_id) {
 		jQuery('body').append(_mask);
 		_mask.css({
 			'position': 'absolute',
-//			'z-index': 10,
+			'z-index': 99998,
 			'top': '0px',
 			'left': '0px',
 			'width': '100%',
@@ -175,7 +248,8 @@ ipam.user.openLayer = function(url, user_id) {
 		_layer.css({
 			'left':left,'top':top,
 			'position':'absolute',
-			'z-index':'9'
+			'z-index':'99999',
+			'max-width': '400px'
 		});
 		jQuery('body').css('position','relative').append(_layer);		
 		
